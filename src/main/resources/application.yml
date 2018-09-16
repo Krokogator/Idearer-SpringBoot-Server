@@ -1,0 +1,45 @@
+#app port
+server:
+  port: 8080
+
+#actuator port (/health etc.)
+management:
+  server:
+    port: 8080
+
+#Database
+spring:
+  datasource:
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USER}
+    password: ${DATABASE_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: none
+    #Logging sql commands
+    show-sql: true
+
+    properties:
+      hibernate:
+        #Slow boot without it
+        temp.use_jdbc_metadata_defaults: false
+
+        jdbc:
+          lob:
+            #Throws an error without it
+            non_contextual_creation: true
+
+#Throws an error if unknown attributes in request body
+  jackson:
+    deserialization:
+      FAIL_ON_UNKNOWN_PROPERTIES: true
+
+
+
+
+
+
+
+
+
+
