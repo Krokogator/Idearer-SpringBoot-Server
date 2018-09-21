@@ -1,9 +1,14 @@
 package com.krokogator.spring.resources.user;
 
+import com.krokogator.spring.resources.user.validation.GetUser;
+import com.krokogator.spring.resources.user.validation.PostUser;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
+import javax.validation.groups.Default;
 import java.util.List;
 
 @RestController
@@ -15,8 +20,14 @@ public class UserController {
     UserService userService;
 
     @PostMapping
-    public User registerUser(User user){
+    public User registerUser(@Validated ({PostUser.class, Default.class}) @RequestBody User user){
         return userService.saveUser(user);
+    }
+
+    @GetMapping("/login")
+    @RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
+    public void loginUser(){
+
     }
 
     @GetMapping
