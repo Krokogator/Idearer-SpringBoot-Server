@@ -3,6 +3,7 @@ package com.krokogator.spring.resources.user;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +14,8 @@ public class UserService {
     UserRepository userRepository;
 
     public User saveUser(User user){
+        //Encode password
+        user.setPassword(User.PASSWORD_ENCODER.encode(user.getPassword()));
         return userRepository.save(user);
     }
 
@@ -25,4 +28,6 @@ public class UserService {
     public User getUser(Long id) {
         return userRepository.getById(id);
     }
+
+
 }
