@@ -24,7 +24,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter{
 
     private static final ImmutableList<String> allowedOrigins =
-            ImmutableList.of("http://localhost:4200");
+            ImmutableList.of("http://localhost:4200", "*");
 
     @Autowired
     DetailsService detailsService;
