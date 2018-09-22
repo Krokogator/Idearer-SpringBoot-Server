@@ -2,10 +2,9 @@ package com.krokogator.spring.resources.user;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.krokogator.spring.resources.user.validation.GetUser;
-import com.krokogator.spring.resources.user.validation.PostUser;
-import io.swagger.annotations.ApiModelProperty;
-import javafx.geometry.Pos;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.krokogator.spring.resources.user.dto.GetUserDTO;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -13,28 +12,21 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
-import javax.validation.constraints.Size;
+
 
 @Entity(name = "userX")
-public class User {
+public class User implements GetUserDTO{
 
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     public static final PasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder();
 
-    @Email
-    @NotNull(groups = PostUser.class)
     private String email;
 
     private String username;
 
-    @JsonIgnore
-    @Size(min = 6)
-    @NotNull(groups = PostUser.class)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     @JsonIgnore
@@ -43,13 +35,6 @@ public class User {
 
     public User() {
     }
-
-    /*
-    public User(String username, String password, String[] roles) {
-        this.username = username;
-        setPassword(password);
-        this.roles = roles;
-    }*/
 
     public User(Long id) {
         this.id = id;

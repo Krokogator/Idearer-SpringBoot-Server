@@ -49,7 +49,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter{
                         "/",
                         "/csrf").permitAll()
 
-                .antMatchers("/v2/api-docs").hasRole("ADMIN")
+                .antMatchers("/v2/api-docs").hasAuthority("ADMIN")
                 //.anyRequest().hasRole("ADMIN")
                 //.anyRequest().permitAll()
 

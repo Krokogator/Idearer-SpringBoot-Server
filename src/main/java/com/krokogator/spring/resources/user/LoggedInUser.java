@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Component("loggedInUser")
 public class LoggedInUser {
+
     public static Long getId(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         CustomUser customUser;
@@ -15,5 +16,16 @@ public class LoggedInUser {
             return 0L;
         }
         return customUser.getId();
+    }
+
+    private CustomUser getLoggedInUser(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomUser customUser;
+        try{
+            customUser = (CustomUser) authentication.getPrincipal();
+        } catch (Exception e) {
+            return null;
+        }
+        return customUser;
     }
 }
