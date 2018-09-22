@@ -4,8 +4,10 @@ import com.krokogator.spring.error.client.ClientErrorException;
 import com.krokogator.spring.resources.category.validation.CategoryDatabaseIntegrityValidator;
 import com.krokogator.spring.resources.category.validation.CategoryRequestBodyValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.List;
 
 @Service

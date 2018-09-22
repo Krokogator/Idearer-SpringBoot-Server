@@ -29,7 +29,7 @@ public class User implements GetUserDTO{
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
-    @JsonIgnore
+    //@JsonIgnore
     private String[] roles;
 
 

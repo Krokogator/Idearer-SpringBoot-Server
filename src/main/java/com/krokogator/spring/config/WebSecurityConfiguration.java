@@ -7,11 +7,16 @@ import com.krokogator.spring.resources.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.expression.SecurityExpressionHandler;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
+import org.springframework.security.access.vote.RoleHierarchyVoter;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.FilterInvocation;
+import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -20,7 +25,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @Component
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter{
 
     private static final ImmutableList<String> allowedOrigins =
@@ -37,6 +42,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter{
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
+                .expressionHandler(webExpressionHandler())
                 //Public endpoint for user registration
                 .antMatchers("/users").permitAll()
 
@@ -49,12 +55,12 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter{
                         "/",
                         "/csrf").permitAll()
 
-                .antMatchers("/v2/api-docs").hasAuthority("ADMIN")
+                .antMatchers("/v2/api-docs").hasRole("ADMIN")
                 //.anyRequest().hasRole("ADMIN")
                 //.anyRequest().permitAll()
 
                 //All other endpoints that require authentication
-                //.anyRequest().authenticated()
+                .anyRequest().authenticated()
                 .and()
                 .httpBasic()
                 .and()
@@ -80,6 +86,27 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter{
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
+
+
+    @Bean
+    public RoleHierarchyImpl roleHierarchy() {
+        RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
+        roleHierarchy.setHierarchy("ROLE_ADMIN > ROLE_MODERATOR > ROLE_USER");
+        return roleHierarchy;
+    }
+
+    @Bean
+    public RoleHierarchyVoter roleVoter() {
+        return new RoleHierarchyVoter(roleHierarchy());
+    }
+
+    private SecurityExpressionHandler<FilterInvocation> webExpressionHandler() {
+        DefaultWebSecurityExpressionHandler defaultWebSecurityExpressionHandler = new DefaultWebSecurityExpressionHandler();
+        defaultWebSecurityExpressionHandler.setRoleHierarchy(roleHierarchy());
+        return defaultWebSecurityExpressionHandler;
+    }
+
+
 }
 
 
