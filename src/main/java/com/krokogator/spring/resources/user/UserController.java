@@ -8,7 +8,6 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -37,7 +36,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    @Secured("ROLE_USER")
+    @PreAuthorize("hasRole('USER')")
     @ApiResponses(value = {
             @ApiResponse(code = 401, message = "Unauthorized")
     })
@@ -58,8 +57,8 @@ public class UserController {
         return userService.getUser(id);
     }
 
+    @PreAuthorize("hasRole('USER')")
     @PatchMapping(value = "/{id}")
-    @Secured("ROLE_USER")
     public GetUserDTO patchUser(@PathVariable Long id, @RequestBody @Validated PostPatchUserDTO user){
         return userService.patchUser(id, user);
     }

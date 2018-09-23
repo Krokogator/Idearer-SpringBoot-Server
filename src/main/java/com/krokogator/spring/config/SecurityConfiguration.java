@@ -4,19 +4,15 @@ package com.krokogator.spring.config;
 import com.google.common.collect.ImmutableList;
 import com.krokogator.spring.resources.user.DetailsService;
 import com.krokogator.spring.resources.user.User;
-import com.krokogator.spring.resources.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.access.expression.SecurityExpressionHandler;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
-import org.springframework.security.access.vote.RoleHierarchyVoter;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.web.cors.CorsConfiguration;
@@ -27,7 +23,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
-public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter{
+public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private static final ImmutableList<String> allowedOrigins =
             ImmutableList.of("http://localhost:4200", "*");
@@ -43,11 +39,10 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter{
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .expressionHandler(webExpressionHandler())
-                //Public endpoint for user registration
-                .antMatchers("/users").permitAll()
+                //Role hierarchy handler
+                .expressionHandler(webSecurityExpressionHandler())
 
-                //Public API documentation
+                //Secured API documentation
                 .antMatchers("/configuration/ui",
                         "/swagger-resources/**",
                         "/configuration/security",
@@ -55,14 +50,11 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter{
                         "/webjars/**",
                         "/",
                         "/csrf").permitAll()
-
                 .antMatchers("/v2/api-docs").hasRole("ADMIN")
-                //.anyRequest().hasRole("ADMIN")
-                //.anyRequest().permitAll()
 
-                //All other endpoints that require authentication
-                //Now use @Secured to secure each endpoint
-                //.anyRequest().authenticated()
+                //Use "hasRole("ROLE") (without 'ROLE_') to specify access level at controller level
+                .anyRequest().permitAll()
+
                 .and()
                 .httpBasic()
                 .and()
@@ -93,19 +85,16 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter{
     @Bean
     public RoleHierarchyImpl roleHierarchy() {
         RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
-        roleHierarchy.setHierarchy("ROLE_ADMIN > ROLE_MODERATOR > ROLE_USER");
+        roleHierarchy.setHierarchy("ROLE_ADMIN > ROLE_USER");
         return roleHierarchy;
     }
 
-    @Bean
-    public RoleHierarchyVoter roleVoter() {
-        return new RoleHierarchyVoter(roleHierarchy());
-    }
 
-    private SecurityExpressionHandler<FilterInvocation> webExpressionHandler() {
-        DefaultWebSecurityExpressionHandler defaultWebSecurityExpressionHandler = new DefaultWebSecurityExpressionHandler();
-        defaultWebSecurityExpressionHandler.setRoleHierarchy(roleHierarchy());
-        return defaultWebSecurityExpressionHandler;
+    @Bean
+    public DefaultWebSecurityExpressionHandler webSecurityExpressionHandler() {
+        DefaultWebSecurityExpressionHandler expressionHandler = new DefaultWebSecurityExpressionHandler();
+        expressionHandler.setRoleHierarchy(roleHierarchy());
+        return expressionHandler;
     }
 
 
