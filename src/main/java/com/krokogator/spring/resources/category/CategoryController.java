@@ -2,6 +2,7 @@ package com.krokogator.spring.resources.category;
 
 import com.krokogator.spring.error.client.ClientErrorException;
 import com.krokogator.spring.resources.category.projection.RequestBodyCategory;
+import com.krokogator.spring.resources.user.LoggedInUser;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;

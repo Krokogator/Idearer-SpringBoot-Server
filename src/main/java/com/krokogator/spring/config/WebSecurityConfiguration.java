@@ -4,6 +4,7 @@ package com.krokogator.spring.config;
 import com.google.common.collect.ImmutableList;
 import com.krokogator.spring.resources.user.DetailsService;
 import com.krokogator.spring.resources.user.User;
+import com.krokogator.spring.resources.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -60,7 +61,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter{
                 //.anyRequest().permitAll()
 
                 //All other endpoints that require authentication
-                .anyRequest().authenticated()
+                //Now use @Secured to secure each endpoint
+                //.anyRequest().authenticated()
                 .and()
                 .httpBasic()
                 .and()

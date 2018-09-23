@@ -14,7 +14,7 @@ public class DetailsService implements UserDetailsService {
     UserRepository users;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public SecureUser loadUserByUsername(String username) throws UsernameNotFoundException {
 
         User user = users.findByUsername(username);
         if (user == null){
@@ -26,7 +26,7 @@ public class DetailsService implements UserDetailsService {
         boolean credentialsNonExpired = true;
         boolean accountNonLocked = true;
 
-        return new CustomUser(
+        return new SecureUser(
                 user.getUsername(),
                 user.getPassword(),
         enabled,
