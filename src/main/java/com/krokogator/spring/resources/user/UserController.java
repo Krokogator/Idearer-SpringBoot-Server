@@ -1,11 +1,19 @@
 package com.krokogator.spring.resources.user;
 
 import com.krokogator.spring.resources.user.dto.GetUserDTO;
+import com.krokogator.spring.resources.user.dto.PostPatchUserDTO;
+import com.krokogator.spring.resources.user.dto.PostUserValidation;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.security.RolesAllowed;
+import javax.validation.groups.Default;
 import java.util.List;
 
 @RestController
@@ -17,12 +25,22 @@ public class UserController {
     UserService userService;
 
     @PostMapping
-    public GetUserDTO registerUser(@RequestBody User user){
+    @ResponseStatus(HttpStatus.CREATED)
+    @ApiResponses(value = {
+            @ApiResponse(code = 400, message = "Bad Request"),
+            @ApiResponse(code = 401, message = "Unauthorized"),
+            @ApiResponse(code = 403, message = "Forbidden"),
+            @ApiResponse(code = 404, message = "Not Found")
+    })
+    public GetUserDTO registerUser(@RequestBody @Validated({PostUserValidation.class, Default.class}) PostPatchUserDTO user){
         return userService.saveUser(user);
     }
 
-    @GetMapping("/login")
-    @RolesAllowed({"ADMIN", "USER"})
+    @PostMapping("/login")
+    @Secured("ROLE_USER")
+    @ApiResponses(value = {
+            @ApiResponse(code = 401, message = "Unauthorized")
+    })
     public void loginUser(){
         // 200 OK if credentials are ok
     }
@@ -33,7 +51,16 @@ public class UserController {
     }
 
     @GetMapping(value = "/{id}")
+    @ApiResponses(value = {
+            @ApiResponse(code = 404, message = "Not Found")
+    })
     public GetUserDTO getUser(@PathVariable Long id){
         return userService.getUser(id);
+    }
+
+    @PatchMapping(value = "/{id}")
+    @Secured("ROLE_USER")
+    public GetUserDTO patchUser(@PathVariable Long id, @RequestBody @Validated PostPatchUserDTO user){
+        return userService.patchUser(id, user);
     }
 }

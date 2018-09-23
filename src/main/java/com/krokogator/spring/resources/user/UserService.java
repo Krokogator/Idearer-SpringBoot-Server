@@ -1,11 +1,10 @@
 package com.krokogator.spring.resources.user;
 
 import com.krokogator.spring.resources.user.dto.GetUserDTO;
+import com.krokogator.spring.resources.user.dto.PostPatchUserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -17,17 +16,23 @@ public class UserService {
     @Autowired
     UserRepository userRepository;
 
-    public GetUserDTO saveUser(User dto){
-
+    public GetUserDTO saveUser(PostPatchUserDTO dto){
         User user = new User();
-        user.setUsername(dto.getUsername());
-        user.setEmail(dto.getEmail());
-        //Encode password
-        user.setPassword(User.PASSWORD_ENCODER.encode(dto.getPassword()));
-        user.setRoles(dto.getRoles());
-
+        user.setUsername(dto.username);
+        user.setPassword(User.PASSWORD_ENCODER.encode(dto.password));
+        user.setEmail(dto.email);
+        user.setRoles(new String[]{"ROLE_USER"});
         return userRepository.save(user);
 
+    }
+
+    public GetUserDTO saveAdmin(PostPatchUserDTO dto){
+        User user = new User();
+        user.setUsername(dto.username);
+        user.setPassword(User.PASSWORD_ENCODER.encode(dto.password));
+        user.setEmail(dto.email);
+        user.setRoles(new String[]{"ROLE_ADMIN"});
+        return userRepository.save(user);
     }
 
     public List<GetUserDTO> getAllUsers() {
@@ -38,5 +43,14 @@ public class UserService {
 
     public GetUserDTO getUser(Long id) {
         return userRepository.getById(id);
+    }
+
+    @PreAuthorize("hasRole('ADMIN') OR @loggedInUser.getId() == #id")
+    public GetUserDTO patchUser(Long id, PostPatchUserDTO dto) {
+        User user = userRepository.getById(id);
+        user.setUsername((dto.username == null)? user.getUsername() : dto.username);
+        user.setPassword(User.PASSWORD_ENCODER.encode((dto.password == null)? user.getPassword() : dto.password));
+        user.setEmail((dto.email == null)? user.getEmail() : dto.email);
+        return userRepository.save(user);
     }
 }
