@@ -33,8 +33,7 @@ public class User implements GetUserDTO{
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
-    //@JsonIgnore
-    private String[] roles;
+    private String role;
 
 
     public User() {
@@ -60,12 +59,12 @@ public class User implements GetUserDTO{
         this.password = password;
     }
 
-    public String[] getRoles() {
-        return roles;
+    public String getRole() {
+        return role;
     }
 
-    public void setRoles(String[] roles) {
-        this.roles = roles;
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public Long getId() {

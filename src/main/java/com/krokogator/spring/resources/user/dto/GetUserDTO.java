@@ -8,4 +8,5 @@ public interface GetUserDTO {
     String getUsername();
     String getEmail();
 
+    String getRole();
 }

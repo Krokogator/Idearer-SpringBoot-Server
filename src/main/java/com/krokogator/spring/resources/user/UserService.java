@@ -20,7 +20,7 @@ public class UserService {
         user.setUsername(dto.username);
         user.setPassword(User.PASSWORD_ENCODER.encode(dto.password));
         user.setEmail(dto.email);
-        user.setRoles(new String[]{"ROLE_USER"});
+        user.setRole("USER");
         return userRepository.save(user);
 
     }
@@ -30,7 +30,7 @@ public class UserService {
         user.setUsername(dto.username);
         user.setPassword(User.PASSWORD_ENCODER.encode(dto.password));
         user.setEmail(dto.email);
-        user.setRoles(new String[]{"ROLE_ADMIN"});
+        user.setRole("ADMIN");
         return userRepository.save(user);
     }
 

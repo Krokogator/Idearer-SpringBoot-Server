@@ -2,7 +2,6 @@ package com.krokogator.spring.resources.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
@@ -33,7 +32,7 @@ public class DetailsService implements UserDetailsService {
         accountNonExpired,
         credentialsNonExpired,
         accountNonLocked,
-        AuthorityUtils.createAuthorityList(user.getRoles()),
+                AuthorityUtils.createAuthorityList("ROLE_" + user.getRole()),
         user.getId());
 
     }
