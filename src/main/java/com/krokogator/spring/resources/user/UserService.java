@@ -3,7 +3,6 @@ package com.krokogator.spring.resources.user;
 import com.krokogator.spring.resources.user.dto.GetUserDTO;
 import com.krokogator.spring.resources.user.dto.PostPatchUserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -48,9 +47,15 @@ public class UserService {
     @PreAuthorize("hasRole('ADMIN') OR @loggedInUser.getId() == #id")
     public GetUserDTO patchUser(Long id, PostPatchUserDTO dto) {
         User user = userRepository.getById(id);
-        user.setUsername((dto.username == null)? user.getUsername() : dto.username);
-        user.setPassword(User.PASSWORD_ENCODER.encode((dto.password == null)? user.getPassword() : dto.password));
-        user.setEmail((dto.email == null)? user.getEmail() : dto.email);
+        if (dto.username != null) {
+            user.setUsername(dto.username);
+        }
+        if (dto.password != null) {
+            user.setPassword(User.PASSWORD_ENCODER.encode(dto.password));
+        }
+        if (dto.email != null) {
+            user.setEmail(dto.email);
+        }
         return userRepository.save(user);
     }
 }

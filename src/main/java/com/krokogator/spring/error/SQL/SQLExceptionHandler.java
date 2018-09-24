@@ -20,11 +20,13 @@ public class SQLExceptionHandler {
     ClientErrorResponseBody clientErrorResponseBody;
 
     @ExceptionHandler(DataIntegrityViolationException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.CONFLICT)
     @ResponseBody
     public ResponseEntity<ClientErrorResponseBody> processConstraintError(DataIntegrityViolationException ex) {
-        clientErrorResponseBody.setStatus(HttpStatus.BAD_REQUEST);
-        clientErrorResponseBody.setDescription(ex.getMessage());
-        return new ResponseEntity<>(clientErrorResponseBody, HttpStatus.BAD_REQUEST);
+        clientErrorResponseBody.setStatus(HttpStatus.CONFLICT.value());
+        clientErrorResponseBody.setError(HttpStatus.CONFLICT.getReasonPhrase());
+        clientErrorResponseBody.setMessage(ex.getLocalizedMessage());
+        clientErrorResponseBody.setDetails(ex);
+        return new ResponseEntity<>(clientErrorResponseBody, HttpStatus.CONFLICT);
     }
 }

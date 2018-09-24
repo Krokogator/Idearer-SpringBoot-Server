@@ -29,7 +29,8 @@ public class UserController {
             @ApiResponse(code = 400, message = "Bad Request"),
             @ApiResponse(code = 401, message = "Unauthorized"),
             @ApiResponse(code = 403, message = "Forbidden"),
-            @ApiResponse(code = 404, message = "Not Found")
+            @ApiResponse(code = 404, message = "Not Found"),
+            @ApiResponse(code = 409, message = "Conflict")
     })
     public GetUserDTO registerUser(@RequestBody @Validated({PostUserValidation.class, Default.class}) PostPatchUserDTO user){
         return userService.saveUser(user);
@@ -57,9 +58,16 @@ public class UserController {
         return userService.getUser(id);
     }
 
-    @PreAuthorize("hasRole('USER')")
     @PatchMapping(value = "/{id}")
-    public GetUserDTO patchUser(@PathVariable Long id, @RequestBody @Validated PostPatchUserDTO user){
-        return userService.patchUser(id, user);
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasRole('USER')")
+    @ApiResponses(value = {
+            @ApiResponse(code = 400, message = "Bad Request"),
+            @ApiResponse(code = 401, message = "Unauthorized"),
+            @ApiResponse(code = 403, message = "Forbidden"),
+            @ApiResponse(code = 404, message = "Not Found")
+    })
+    public void patchUser(@PathVariable Long id, @RequestBody @Validated PostPatchUserDTO user) {
+        userService.patchUser(id, user);
     }
 }

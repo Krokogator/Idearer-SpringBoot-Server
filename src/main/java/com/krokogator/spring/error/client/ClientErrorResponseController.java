@@ -13,8 +13,9 @@ public class ClientErrorResponseController {
 
     @ExceptionHandler(ClientErrorException.class)
     public ResponseEntity<ClientErrorResponseBody> throwResponseException(ClientErrorException exception) {
-        clientErrorResponseBody.setStatus(exception.getStatus());
-        clientErrorResponseBody.setDescription(exception.getMessage());
+        clientErrorResponseBody.setStatus(exception.getStatus().value());
+        clientErrorResponseBody.setError(exception.getStatus().getReasonPhrase());
+        clientErrorResponseBody.setMessage(exception.getMessage());
 
         return new ResponseEntity<>(clientErrorResponseBody, exception.getStatus());
     }

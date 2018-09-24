@@ -1,7 +1,9 @@
 package com.krokogator.spring.error.client;
 
-import org.springframework.http.HttpStatus;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
+
+import java.util.Date;
 
 
 /**
@@ -9,23 +11,53 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class ClientErrorResponseBody {
-    private HttpStatus status;
-    private String description;
+    private Date timestamp;
+    private int status;
+    private String error;
+    private String message;
+    private DataIntegrityViolationException details;
 
-
-    public String getDescription() {
-        return description;
+    public ClientErrorResponseBody() {
+        this.timestamp = new Date();
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public String getMessage() {
+        return message;
     }
 
-    public HttpStatus getStatus() {
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public int getStatus() {
         return status;
     }
 
-    public void setStatus(HttpStatus status) {
+    public void setStatus(int status) {
         this.status = status;
+    }
+
+    public Date getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Date timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public String getError() {
+        return error;
+    }
+
+    public void setError(String error) {
+        this.error = error;
+    }
+
+    public DataIntegrityViolationException getDetails() {
+        return details;
+    }
+
+    public void setDetails(DataIntegrityViolationException details) {
+        this.details = details;
     }
 }

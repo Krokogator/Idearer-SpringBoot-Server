@@ -1,17 +1,12 @@
 package com.krokogator.spring.resources.user;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.krokogator.spring.resources.user.dto.GetUserDTO;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 
 @Entity(name = "userX")
@@ -25,6 +20,15 @@ public class User implements GetUserDTO{
     private String email;
 
     private String username;
+
+    @Column(unique = true)
+    private String usernameLowerCase;
+
+    @PrePersist
+    @PreUpdate
+    private void prepare() {
+        this.usernameLowerCase = (username == null) ? null : username.toLowerCase();
+    }
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
