@@ -1,5 +1,6 @@
 package com.krokogator.spring.resources.user.dto;
 
+import com.krokogator.spring.resources.user.validationgroup.PostUserValidation;
 import io.swagger.annotations.ApiModel;
 
 import javax.validation.constraints.Email;

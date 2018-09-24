@@ -2,7 +2,7 @@ package com.krokogator.spring.resources.user;
 
 import com.krokogator.spring.resources.user.dto.GetUserDTO;
 import com.krokogator.spring.resources.user.dto.PostPatchUserDTO;
-import com.krokogator.spring.resources.user.dto.PostUserValidation;
+import com.krokogator.spring.resources.user.validationgroup.PostUserValidation;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;

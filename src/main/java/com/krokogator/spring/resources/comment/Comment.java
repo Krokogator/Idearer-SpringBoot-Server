@@ -2,7 +2,7 @@ package com.krokogator.spring.resources.comment;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.krokogator.spring.resources.article.Article;
-import com.krokogator.spring.resources.user.LoggedInUser;
+import com.krokogator.spring.resources.user.CurrentUser;
 import com.krokogator.spring.resources.user.User;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -37,7 +37,7 @@ public class Comment {
     @PostLoad
     private void Load(){
         likesCount = likes.size();
-        liked = likes.stream().anyMatch(x -> x.getId().equals(LoggedInUser.getId()));
+        liked = likes.stream().anyMatch(x -> x.getId().equals(CurrentUser.getId()));
     }
 
     public Comment(){

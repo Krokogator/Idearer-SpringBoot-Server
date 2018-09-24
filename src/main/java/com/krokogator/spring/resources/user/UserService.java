@@ -4,13 +4,16 @@ import com.krokogator.spring.resources.user.dto.GetUserDTO;
 import com.krokogator.spring.resources.user.dto.PostPatchUserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
 
     @Autowired
     UserRepository userRepository;
@@ -44,7 +47,7 @@ public class UserService {
         return userRepository.getById(id);
     }
 
-    @PreAuthorize("hasRole('ADMIN') OR @loggedInUser.getId() == #id")
+    @PreAuthorize("hasRole('ADMIN') OR @CurrentUser.getId() == #id")
     public GetUserDTO patchUser(Long id, PostPatchUserDTO dto) {
         User user = userRepository.getById(id);
         if (dto.username != null) {
@@ -57,5 +60,30 @@ public class UserService {
             user.setEmail(dto.email);
         }
         return userRepository.save(user);
+    }
+
+    @Override
+    public SecureUser loadUserByUsername(String username) throws UsernameNotFoundException {
+
+        User user = userRepository.findByUsername(username);
+        if (user == null) {
+            throw new UsernameNotFoundException(username + " was not found");
+        }
+
+        boolean enabled = true;
+        boolean accountNonExpired = true;
+        boolean credentialsNonExpired = true;
+        boolean accountNonLocked = true;
+
+        return new SecureUser(
+                user.getUsername(),
+                user.getPassword(),
+                enabled,
+                accountNonExpired,
+                credentialsNonExpired,
+                accountNonLocked,
+                AuthorityUtils.createAuthorityList("ROLE_" + user.getRole()),
+                user.getId());
+
     }
 }

@@ -7,6 +7,5 @@ public interface GetUserDTO {
     Long getId();
     String getUsername();
     String getEmail();
-
     String getRole();
 }

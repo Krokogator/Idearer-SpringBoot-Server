@@ -4,8 +4,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-@Component("loggedInUser")
-public class LoggedInUser {
+@Component("CurrentUser")
+public class CurrentUser {
 
     public static Long getId(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

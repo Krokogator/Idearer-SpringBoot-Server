@@ -2,8 +2,8 @@ package com.krokogator.spring.config;
 
 
 import com.google.common.collect.ImmutableList;
-import com.krokogator.spring.resources.user.DetailsService;
 import com.krokogator.spring.resources.user.User;
+import com.krokogator.spring.resources.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,7 +29,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             ImmutableList.of("http://localhost:4200", "*");
 
     @Autowired
-    DetailsService detailsService;
+    UserService detailsService;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -60,8 +60,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .csrf().disable()
                 .cors();
-
-        //http.authorizeRequests().anyRequest().authenticated();
     }
 
     @Bean
@@ -81,7 +79,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return source;
     }
 
-
     @Bean
     public RoleHierarchyImpl roleHierarchy() {
         RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
@@ -97,46 +94,5 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return expressionHandler;
     }
 
-
 }
 
-
-/** KOPIA ZAPASOWA - publiczny swagger + zablokowane API na hasło generowane przez serwer */
-
-//@Configuration
-//@EnableWebSecurity
-//public class EndpointAccessConfiguration extends WebSecurityConfigurerAdapter {
-//
-//
-//
-//    @Override
-//    protected void configure(HttpSecurity http) throws Exception {
-//        allowOnlyApi(http);
-////        allowEveryone(http);
-//    }
-//
-//    private void allowEveryone(HttpSecurity http) throws Exception {
-//        http.authorizeRequests()
-//                .regexMatchers(".*")
-//                .permitAll().and()
-//                .csrf().disable();
-//        super.configure(http);
-//
-//    }
-//
-//
-//    private void allowOnlyApi(HttpSecurity http) throws Exception {
-//        http
-//                .authorizeRequests()
-//                //.antMatchers(HttpMethod.GET,"/notes/**", "/folders/**").permitAll()
-//                //Allow swagger
-//                .antMatchers("/v2/api-docs", "/configuration/ui", "/swagger-resources/**", "/configuration/security", "/swagger-ui.html", "/webjars/**", "/").permitAll()
-//                .anyRequest().authenticated()
-//                .and()
-//                .formLogin()
-////                .and()
-////            .httpBasic()
-//        ;
-//    }
-//
-//}

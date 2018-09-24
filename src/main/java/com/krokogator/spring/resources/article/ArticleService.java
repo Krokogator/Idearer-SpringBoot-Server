@@ -1,7 +1,7 @@
 package com.krokogator.spring.resources.article;
 
 import com.krokogator.spring.resources.category.Category;
-import com.krokogator.spring.resources.user.LoggedInUser;
+import com.krokogator.spring.resources.user.CurrentUser;
 import com.krokogator.spring.resources.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -21,7 +21,7 @@ public class ArticleService {
 
     // @PostAuthorize("hasRole('ADMIN') OR @loggedInUser.getId() == #article.author.id ")
     public Article addArticle(Article article) {
-        article.setUser(new User(LoggedInUser.getId()));
+        article.setUser(new User(CurrentUser.getId()));
         //Article articleDB = new Article(article.getTitle(), article.getContent());
         //articleDB.setUser(new User(userId));
         //articleDB.setCategory(new Category(categoryId));
@@ -38,13 +38,13 @@ public class ArticleService {
 
     public void likeArticle(Long id) {
         Article article = articleRepository.getById(id);
-        article.getLikes().add(new User(LoggedInUser.getId()));
+        article.getLikes().add(new User(CurrentUser.getId()));
         articleRepository.save(article);
     }
 
     public void dislikeArticle(Long id) {
         Article article = articleRepository.getById(id);
-        article.getLikes().removeIf(x -> x.getId().equals(LoggedInUser.getId()));
+        article.getLikes().removeIf(x -> x.getId().equals(CurrentUser.getId()));
         articleRepository.save(article);
     }
 
