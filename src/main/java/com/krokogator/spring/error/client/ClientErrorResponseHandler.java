@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
-public class ClientErrorResponseController {
+public class ClientErrorResponseHandler {
 
     @Autowired
     ClientErrorResponseBody clientErrorResponseBody;

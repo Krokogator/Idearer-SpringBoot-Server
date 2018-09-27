@@ -1,7 +1,9 @@
 package com.krokogator.spring.resources.user;
 
+import com.krokogator.spring.error.client.ClientErrorException;
 import com.krokogator.spring.resources.user.dto.GetUserDTO;
-import com.krokogator.spring.resources.user.dto.PostPatchUserDTO;
+import com.krokogator.spring.resources.user.dto.PatchUserDTO;
+import com.krokogator.spring.resources.user.dto.PostUserDTO;
 import com.krokogator.spring.resources.user.validationgroup.PostUserValidation;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiResponse;
@@ -32,7 +34,7 @@ public class UserController {
             @ApiResponse(code = 404, message = "Not Found"),
             @ApiResponse(code = 409, message = "Conflict")
     })
-    public GetUserDTO registerUser(@RequestBody @Validated({PostUserValidation.class, Default.class}) PostPatchUserDTO user){
+    public GetUserDTO registerUser(@RequestBody @Validated({PostUserValidation.class, Default.class}) PostUserDTO user) throws ClientErrorException {
         return userService.saveUser(user);
     }
 
@@ -41,8 +43,8 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(code = 401, message = "Unauthorized")
     })
-    public void loginUser(){
-        // 200 OK if credentials are ok
+    public Long loginUser() {
+        return CurrentUser.getId();
     }
 
     @GetMapping
@@ -54,7 +56,7 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(code = 404, message = "Not Found")
     })
-    public GetUserDTO getUser(@PathVariable Long id){
+    public GetUserDTO getUser(@PathVariable Long id) throws ClientErrorException {
         return userService.getUser(id);
     }
 
@@ -67,7 +69,7 @@ public class UserController {
             @ApiResponse(code = 403, message = "Forbidden"),
             @ApiResponse(code = 404, message = "Not Found")
     })
-    public void patchUser(@PathVariable Long id, @RequestBody @Validated PostPatchUserDTO user) {
+    public void patchUser(@PathVariable Long id, @RequestBody @Validated PatchUserDTO user) {
         userService.patchUser(id, user);
     }
 }

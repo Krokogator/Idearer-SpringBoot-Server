@@ -1,17 +1,20 @@
 package com.krokogator.spring.error.client;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
 
 /**
  * Provides custom message for bad requests
  */
-@Component
+
 public class ClientErrorException extends Exception {
     private HttpStatus status;
     private String message;
 
-    @Override
+    public ClientErrorException(HttpStatus status, String message) {
+        this.status = status;
+        this.message = message;
+    }
+
     public String getMessage() {
         return message;
     }

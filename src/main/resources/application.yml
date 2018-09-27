@@ -32,7 +32,9 @@ spring:
 #Throws an error if unknown attributes in request body
   jackson:
     deserialization:
-      FAIL_ON_UNKNOWN_PROPERTIES: true
+      FAIL_ON_UNKNOWN_PROPERTIES: false
+  profiles:
+    active: local
 
 
 

@@ -1,10 +1,13 @@
 package com.krokogator.spring.resources.user;
 
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.CrudRepository;
 
-public interface UserRepository extends CrudRepository<User, Long> {
+import java.util.Optional;
 
-    User findByUsername(String username);
+public interface UserRepository extends CrudRepository<User, Long>, JpaSpecificationExecutor<User> {
+
+    Optional<User> findByUsernameIgnoreCase(String username);
 
     User getById(Long id);
 }

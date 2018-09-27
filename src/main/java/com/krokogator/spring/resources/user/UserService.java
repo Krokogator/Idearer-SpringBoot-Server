@@ -1,8 +1,11 @@
 package com.krokogator.spring.resources.user;
 
+import com.krokogator.spring.error.client.ClientErrorException;
 import com.krokogator.spring.resources.user.dto.GetUserDTO;
-import com.krokogator.spring.resources.user.dto.PostPatchUserDTO;
+import com.krokogator.spring.resources.user.dto.PatchUserDTO;
+import com.krokogator.spring.resources.user.dto.PostUserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -11,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -18,7 +22,11 @@ public class UserService implements UserDetailsService {
     @Autowired
     UserRepository userRepository;
 
-    public GetUserDTO saveUser(PostPatchUserDTO dto){
+    public GetUserDTO saveUser(PostUserDTO dto) throws ClientErrorException {
+        Optional<User> duplicate = userRepository.findByUsernameIgnoreCase(dto.username);
+        if (duplicate.isPresent()) {
+            throw new ClientErrorException(HttpStatus.CONFLICT, "username already exists");
+        }
         User user = new User();
         user.setUsername(dto.username);
         user.setPassword(User.PASSWORD_ENCODER.encode(dto.password));
@@ -28,7 +36,7 @@ public class UserService implements UserDetailsService {
 
     }
 
-    public GetUserDTO saveAdmin(PostPatchUserDTO dto){
+    public GetUserDTO saveAdmin(PatchUserDTO dto) {
         User user = new User();
         user.setUsername(dto.username);
         user.setPassword(User.PASSWORD_ENCODER.encode(dto.password));
@@ -43,32 +51,28 @@ public class UserService implements UserDetailsService {
         return allUsers;
     }
 
-    public GetUserDTO getUser(Long id) {
-        return userRepository.getById(id);
+    public GetUserDTO getUser(Long id) throws ClientErrorException {
+        Optional<User> user = userRepository.findById(id);
+        return user.orElseThrow(() -> new ClientErrorException(HttpStatus.NOT_FOUND, "User not found"));
     }
 
-    @PreAuthorize("hasRole('ADMIN') OR @CurrentUser.getId() == #id")
-    public GetUserDTO patchUser(Long id, PostPatchUserDTO dto) {
+    @PreAuthorize("hasRole('ADMIN') OR @CurrentUser.getId() == #id AND #dto.role == NULL")
+    public GetUserDTO patchUser(Long id, PatchUserDTO dto) {
         User user = userRepository.getById(id);
-        if (dto.username != null) {
-            user.setUsername(dto.username);
-        }
-        if (dto.password != null) {
-            user.setPassword(User.PASSWORD_ENCODER.encode(dto.password));
-        }
-        if (dto.email != null) {
-            user.setEmail(dto.email);
-        }
+        Optional.ofNullable(dto.username).ifPresent(user::setUsername);
+        Optional.ofNullable(dto.password).ifPresent(x -> user.setPassword(User.PASSWORD_ENCODER.encode(x)));
+        Optional.ofNullable(dto.email).ifPresent(user::setEmail);
+        Optional.ofNullable(dto.role).ifPresent(user::setRole);
+
         return userRepository.save(user);
     }
 
     @Override
     public SecureUser loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        User user = userRepository.findByUsername(username);
-        if (user == null) {
-            throw new UsernameNotFoundException(username + " was not found");
-        }
+        System.out.println(username);
+        Optional<User> temp = userRepository.findByUsernameIgnoreCase(username);
+        User user = temp.orElseThrow(() -> new UsernameNotFoundException(username + " was not found"));
 
         boolean enabled = true;
         boolean accountNonExpired = true;

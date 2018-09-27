@@ -7,8 +7,7 @@ import com.krokogator.spring.resources.category.CategoryRepository;
 import com.krokogator.spring.resources.comment.Comment;
 import com.krokogator.spring.resources.comment.CommentRepository;
 import com.krokogator.spring.resources.user.User;
-import com.krokogator.spring.resources.user.UserService;
-import com.krokogator.spring.resources.user.dto.PostPatchUserDTO;
+import com.krokogator.spring.resources.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
@@ -19,7 +18,7 @@ import org.springframework.stereotype.Component;
 public class DBDataLoader implements ApplicationRunner {
 
     @Autowired
-    private UserService userService;
+    private UserRepository userRepository;
     @Autowired
     private CategoryRepository categoryRepository;
     @Autowired
@@ -36,19 +35,19 @@ public class DBDataLoader implements ApplicationRunner {
             /** DATA ONLY FOR DEVELOPMENT */
 
             //Admin id:1  User id:2
-            PostPatchUserDTO user1 = new PostPatchUserDTO();
-            user1.username = "admin";
-            user1.password = "admin";
-            user1.email = "admin@gmail.com";
-            //user1.setRoles(new String[]{"ROLE_ADMIN", "ROLE_USER"});
-            userService.saveAdmin(user1);
+            User user1 = new User();
+            user1.setUsername("admin");
+            user1.setPassword(User.PASSWORD_ENCODER.encode("admin"));
+            user1.setEmail("admin@gmail.com");
+            user1.setRole("ADMIN");
+            userRepository.save(user1);
 
-            PostPatchUserDTO user2 = new PostPatchUserDTO();
-            user2.username = "user";
-            user2.password = "user";
-            user2.email = "user@gmail.com";
-            //user2.setRoles(new String[]{"ROLE_USER"});
-            userService.saveUser(user2);
+            User user2 = new User();
+            user2.setUsername("user");
+            user2.setPassword(User.PASSWORD_ENCODER.encode("user"));
+            user2.setEmail("user@gmail.com");
+            user2.setRole("USER");
+            userRepository.save(user2);
 
             //Jedzenie id:1 Gry id:2
             categoryRepository.save((new Category("Food")));
