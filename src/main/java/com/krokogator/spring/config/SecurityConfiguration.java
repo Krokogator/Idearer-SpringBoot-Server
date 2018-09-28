@@ -27,7 +27,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private static final ImmutableList<String> allowedOrigins =
-            ImmutableList.of("http://localhost:4200");
+            ImmutableList.of("http://localhost:4200", "https://krokogator.github.io");
 
     @Autowired
     UserService detailsService;
