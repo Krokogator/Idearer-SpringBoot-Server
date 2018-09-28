@@ -64,8 +64,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                     .enableSessionUrlRewriting(true)
                 .and()
                 .csrf().disable()
-                .cors()
-                .and()
+                .cors().disable()
                 .logout();
     }
 
