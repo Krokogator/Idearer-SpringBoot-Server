@@ -1,11 +1,17 @@
 #app port
 server:
   port: 8080
+  servlet:
+    session:
+      cookie:
+        secure: false
+        http-only: false
 
 #actuator port (/health etc.)
-management:
-  server:
-    port: 8080
+#management:
+#  server:
+#    port: 8080
+
 
 #Database
 spring:
@@ -35,7 +41,6 @@ spring:
       FAIL_ON_UNKNOWN_PROPERTIES: false
   profiles:
     active: local
-
 
 
 
