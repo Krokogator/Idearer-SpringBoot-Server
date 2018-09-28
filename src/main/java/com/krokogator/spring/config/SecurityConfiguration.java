@@ -27,7 +27,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private static final ImmutableList<String> allowedOrigins =
-            ImmutableList.of("http://localhost:4200", "*");
+            ImmutableList.of("http://localhost:4200");
 
     @Autowired
     UserService detailsService;
@@ -60,7 +60,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .httpBasic()
                 .and()
                 .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+                    .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
                 .and()
                 .csrf().disable()
                 .cors()
@@ -99,6 +99,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         expressionHandler.setRoleHierarchy(roleHierarchy());
         return expressionHandler;
     }
+
 
 }
 
