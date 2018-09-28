@@ -61,6 +61,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .sessionManagement()
                     .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+                    .enableSessionUrlRewriting(true)
                 .and()
                 .csrf().disable()
                 .cors()
