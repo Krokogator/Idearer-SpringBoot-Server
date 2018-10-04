@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -26,6 +27,9 @@ public class DBDataLoader implements ApplicationRunner {
     @Autowired
     private CommentRepository commentRepository;
 
+    @Autowired
+    private BCryptPasswordEncoder PASSWORD_ENCODER;
+
     @Value("${spring.jpa.hibernate.ddl-auto}")
     private String ddlAutoType;
 
@@ -37,14 +41,14 @@ public class DBDataLoader implements ApplicationRunner {
             //Admin id:1  User id:2
             User user1 = new User();
             user1.setUsername("admin");
-            user1.setPassword(User.PASSWORD_ENCODER.encode("admin"));
+            user1.setPassword(PASSWORD_ENCODER.encode("admin"));
             user1.setEmail("admin@gmail.com");
             user1.setRole("ADMIN");
             userRepository.save(user1);
 
             User user2 = new User();
             user2.setUsername("user");
-            user2.setPassword(User.PASSWORD_ENCODER.encode("user"));
+            user2.setPassword(PASSWORD_ENCODER.encode("user"));
             user2.setEmail("user@gmail.com");
             user2.setRole("USER");
             userRepository.save(user2);

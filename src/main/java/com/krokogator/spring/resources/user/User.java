@@ -18,8 +18,6 @@ public class User implements GetUserDTO{
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    public static final PasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder();
-
     private String email;
 
     private String username;
