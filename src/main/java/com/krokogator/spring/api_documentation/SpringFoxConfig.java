@@ -27,6 +27,7 @@ public class SpringFoxConfig  {
                 .select()
                 //Hides error controller
                 .apis(Predicates.not(RequestHandlerSelectors.basePackage("org.springframework.boot")))
+                .apis(Predicates.not(RequestHandlerSelectors.basePackage("org.springframework.security.oauth2")))
                 //Which paths to scan
                 .paths(PathSelectors.any())
                 .build();

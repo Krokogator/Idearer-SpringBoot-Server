@@ -7,6 +7,7 @@ import com.krokogator.spring.resources.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -56,33 +57,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                //Role hierarchy handler
-                .expressionHandler(webSecurityExpressionHandler())
                 .antMatchers("/api/register").anonymous()
-                //Secured API documentation
-                .antMatchers("/configuration/ui",
-                        "/swagger-resources/**",
-                        "/configuration/security",
-                        "/swagger-ui.html",
-                        "/webjars/**",
-                        "/",
-                        "/csrf").permitAll()
-                .antMatchers("/v2/api-docs").hasRole("ADMIN")
-
-                //Use "hasRole("ROLE") (without 'ROLE_') to specify access level at controller level
-                .anyRequest().permitAll()
-
-                .and()
-                .httpBasic()
-                .and()
-                .sessionManagement()
-                    .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
-                    .enableSessionUrlRewriting(true)
-                .and()
-                .csrf().disable()
-                .cors()
-                .and()
-                .logout();
+                .anyRequest().authenticated()
+                .antMatchers("/","/**").permitAll()
+                .antMatchers(HttpMethod.OPTIONS).permitAll()
+                .and().httpBasic().and()
+                .csrf().disable();
     }
 
     @Bean
