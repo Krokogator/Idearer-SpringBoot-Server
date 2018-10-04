@@ -10,6 +10,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -22,6 +23,9 @@ public class UserService implements UserDetailsService {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    private BCryptPasswordEncoder PASSWORD_ENCODER;
+
     public GetUserDTO saveUser(PostUserDTO dto) throws ClientErrorException {
         Optional<User> duplicate = userRepository.findByUsernameIgnoreCase(dto.username);
         if (duplicate.isPresent()) {
@@ -29,7 +33,7 @@ public class UserService implements UserDetailsService {
         }
         User user = new User();
         user.setUsername(dto.username);
-        user.setPassword(User.PASSWORD_ENCODER.encode(dto.password));
+        user.setPassword(PASSWORD_ENCODER.encode(dto.password));
         user.setEmail(dto.email);
         user.setRole("USER");
         return userRepository.save(user);
@@ -39,7 +43,7 @@ public class UserService implements UserDetailsService {
     public GetUserDTO saveAdmin(PatchUserDTO dto) {
         User user = new User();
         user.setUsername(dto.username);
-        user.setPassword(User.PASSWORD_ENCODER.encode(dto.password));
+        user.setPassword(PASSWORD_ENCODER.encode(dto.password));
         user.setEmail(dto.email);
         user.setRole("ADMIN");
         return userRepository.save(user);
@@ -60,7 +64,7 @@ public class UserService implements UserDetailsService {
     public GetUserDTO patchUser(Long id, PatchUserDTO dto) {
         User user = userRepository.getById(id);
         Optional.ofNullable(dto.username).ifPresent(user::setUsername);
-        Optional.ofNullable(dto.password).ifPresent(x -> user.setPassword(User.PASSWORD_ENCODER.encode(x)));
+        Optional.ofNullable(dto.password).ifPresent(x -> user.setPassword(PASSWORD_ENCODER.encode(x)));
         Optional.ofNullable(dto.email).ifPresent(user::setEmail);
         Optional.ofNullable(dto.role).ifPresent(user::setRole);
 

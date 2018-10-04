@@ -42,6 +42,14 @@ spring:
   profiles:
     active: local
 
+security:
+  oauth2:
+    resource.id: oauth2_application
+access_token:
+  validity_period: 3600
+refresh_token:
+  validity_period: 10000
+
 
 
 

@@ -7,13 +7,17 @@ import com.krokogator.spring.resources.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.web.cors.CorsConfiguration;
@@ -32,41 +36,33 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired
     UserService detailsService;
 
+    @Autowired
+    BCryptPasswordEncoder PASSWORD_ENCODER;
+
+    @Bean
+    public DaoAuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setPasswordEncoder(PASSWORD_ENCODER );
+        provider.setUserDetailsService(userDetailsService());
+        return provider;
+    }
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(detailsService).passwordEncoder(User.PASSWORD_ENCODER);
+        auth
+                .userDetailsService(detailsService)
+                .passwordEncoder(PASSWORD_ENCODER);
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                //Role hierarchy handler
-                .expressionHandler(webSecurityExpressionHandler())
-
-                //Secured API documentation
-                .antMatchers("/configuration/ui",
-                        "/swagger-resources/**",
-                        "/configuration/security",
-                        "/swagger-ui.html",
-                        "/webjars/**",
-                        "/",
-                        "/csrf").permitAll()
-                .antMatchers("/v2/api-docs").hasRole("ADMIN")
-
-                //Use "hasRole("ROLE") (without 'ROLE_') to specify access level at controller level
+                .antMatchers("/api/register").anonymous()
                 .anyRequest().permitAll()
-
-                .and()
-                .httpBasic()
-                .and()
-                .sessionManagement()
-                    .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
-                    .enableSessionUrlRewriting(true)
-                .and()
-                .csrf().disable()
-                .cors()
-                .and()
-                .logout();
+                .antMatchers("/","/**").permitAll()
+                .antMatchers(HttpMethod.OPTIONS).permitAll()
+                .and().httpBasic().and()
+                .csrf().disable();
     }
 
     @Bean
@@ -99,6 +95,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         DefaultWebSecurityExpressionHandler expressionHandler = new DefaultWebSecurityExpressionHandler();
         expressionHandler.setRoleHierarchy(roleHierarchy());
         return expressionHandler;
+    }
+
+    @Override
+    @Bean
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
     }
 
 
