@@ -1,13 +1,10 @@
 package com.krokogator.spring.resources.category;
 
 import com.krokogator.spring.error.client.ClientErrorException;
-import com.krokogator.spring.resources.category.validation.CategoryDatabaseIntegrityValidator;
-import com.krokogator.spring.resources.category.validation.CategoryRequestBodyValidator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.security.RolesAllowed;
 import java.util.List;
 
 @Service
@@ -16,33 +13,30 @@ public class CategoryService {
     @Autowired
     private CategoryRepository categoryRepository;
 
-    @Autowired
-    private CategoryDatabaseIntegrityValidator categoryDatabaseIntegrityValidator;
-
-    @Autowired
-    private CategoryRequestBodyValidator categoryRequestBodyValidator;
-
     public Category addCategory(Category category) throws ClientErrorException {
-        categoryDatabaseIntegrityValidator.validateNameAlreadyExists(category.getName());
+        if(categoryRepository.findByNameIgnoreCase(category.getName()).isPresent()) {
+            throw new ClientErrorException(HttpStatus.CONFLICT, "Category '"+category.getId()+"' alread exists.");
+        }
         return categoryRepository.save(category);
     }
 
-    public Category updateCategory(long id, Category category) throws ClientErrorException {
-        categoryDatabaseIntegrityValidator.validateExistance(id);
-        Category categoryDb = categoryRepository.getById(id);
+    public Category updateCategory(Long id, Category dto) throws ClientErrorException {
+        //Get category if exists
+        Category category = categoryRepository.findById(id).orElseThrow(() -> new ClientErrorException(HttpStatus.NOT_FOUND, "Category '"+id+"' not found."));
 
-        if(category.getName() != null){
-            categoryDb.setName(category.getName());
+        if(categoryRepository.findByNameIgnoreCase(dto.getName()).isPresent()) {
+            throw new ClientErrorException(HttpStatus.CONFLICT, "Category '"+dto.getName()+"' already exists.");
         }
 
-        categoryRequestBodyValidator.validate(categoryDb);
+        //Update category title
+        category.setName(category.getName());
 
-        return categoryRepository.save(categoryDb);
+        return categoryRepository.save(category);
     }
 
-    public void deleteCategory(long id) throws ClientErrorException {
-        categoryDatabaseIntegrityValidator.validateExistance(id);
-        categoryRepository.deleteById(id);
+    public void deleteCategory(Long id) throws ClientErrorException {
+        Category category = categoryRepository.findById(id).orElseThrow(() -> new ClientErrorException(HttpStatus.NOT_FOUND, "Category '"+id+"' not found."));
+        categoryRepository.delete(category);
     }
 
     public List<Category> getAllCategories() {
