@@ -55,15 +55,14 @@ public class UserService implements UserDetailsService {
         return allUsers;
     }
 
-    public GetUserDTO getUser(String username) throws ClientErrorException {
-        Optional<User> user = userRepository.findByUsernameIgnoreCase(username);
+    public GetUserDTO getUser(Long id) throws ClientErrorException {
+        Optional<User> user = userRepository.findById(id);
         return user.orElseThrow(() -> new ClientErrorException(HttpStatus.NOT_FOUND, "User not found"));
     }
 
     @PreAuthorize("hasRole('ADMIN') OR @CurrentUser.getId() == #id AND #dto.role == NULL")
-    public GetUserDTO patchUser(String username, PatchUserDTO dto) {
-        Optional <User> optionalUser = userRepository.findByUsernameIgnoreCase(username);
-        User user = optionalUser.orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    public GetUserDTO patchUser(Long id, PatchUserDTO dto) {
+        User user = userRepository.getById(id);
         Optional.ofNullable(dto.username).ifPresent(user::setUsername);
         Optional.ofNullable(dto.password).ifPresent(x -> user.setPassword(PASSWORD_ENCODER.encode(x)));
         Optional.ofNullable(dto.email).ifPresent(user::setEmail);
@@ -91,7 +90,8 @@ public class UserService implements UserDetailsService {
                 accountNonExpired,
                 credentialsNonExpired,
                 accountNonLocked,
-                AuthorityUtils.createAuthorityList("ROLE_" + user.getRole()));
+                AuthorityUtils.createAuthorityList("ROLE_" + user.getRole()),
+                user.getId());
 
     }
 }

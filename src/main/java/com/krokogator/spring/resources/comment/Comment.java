@@ -37,7 +37,7 @@ public class Comment {
     @PostLoad
     private void Load(){
         likesCount = likes.size();
-        liked = likes.stream().anyMatch(x -> x.getUsername().equals(CurrentUser.getName()));
+        liked = likes.stream().anyMatch(x -> x.getId().equals(CurrentUser.getId()));
     }
 
     public Comment(){

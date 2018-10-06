@@ -18,7 +18,7 @@ public interface ArticleRepository extends CrudRepository<Article, Long>, JpaSpe
 
     /** FIND by (author AND category) OR (author) OR (category) OR findAll*/
     Page<Article> findAllByOrderByCreatedDesc(Pageable pageable);
-    Page<Article> findAllByCategoryTitleIgnoreCaseOrderByCreatedDesc(String categoryTitle, Pageable pageable);
-    Page<Article> findAllByUserUsernameOrderByCreatedDesc(String userName, Pageable pageable);
-    Page<Article> findAllByUserUsernameAndCategoryTitleIgnoreCaseOrderByCreatedDesc(String userName, String categoryTitle, Pageable pageable);
+    Page<Article> findAllByCategoryNameIgnoreCaseOrderByCreatedDesc(String categoryId, Pageable pageable);
+    Page<Article> findAllByUserIdOrderByCreatedDesc(Long userId, Pageable pageable);
+    Page<Article> findAllByUserIdAndCategoryNameIgnoreCaseOrderByCreatedDesc(Long userId, String categoryId, Pageable pageable);
 }

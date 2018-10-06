@@ -4,7 +4,6 @@ import com.krokogator.spring.error.client.ClientErrorException;
 import com.krokogator.spring.resources.category.validation.CategoryDatabaseIntegrityValidator;
 import com.krokogator.spring.resources.category.validation.CategoryRequestBodyValidator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 
@@ -28,8 +27,9 @@ public class CategoryService {
         return categoryRepository.save(category);
     }
 
-    public Category updateCategory(String title, Category category) throws ClientErrorException {
-         Category categoryDb = categoryRepository.findByTitle(title).orElseThrow(()-> new ClientErrorException(HttpStatus.NOT_FOUND, "Category not found"));
+    public Category updateCategory(long id, Category category) throws ClientErrorException {
+        categoryDatabaseIntegrityValidator.validateExistance(id);
+        Category categoryDb = categoryRepository.getById(id);
 
         if(category.getName() != null){
             categoryDb.setName(category.getName());
@@ -40,8 +40,9 @@ public class CategoryService {
         return categoryRepository.save(categoryDb);
     }
 
-    public void deleteCategory(String title) throws ClientErrorException {
-        categoryRepository.deleteById(title);
+    public void deleteCategory(long id) throws ClientErrorException {
+        categoryDatabaseIntegrityValidator.validateExistance(id);
+        categoryRepository.deleteById(id);
     }
 
     public List<Category> getAllCategories() {

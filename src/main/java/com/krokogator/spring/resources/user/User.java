@@ -15,10 +15,12 @@ import javax.persistence.Id;
 @Entity(name = "userX")
 public class User implements GetUserDTO{
 
-    @Id
-    private String username;
+    @Id @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
     private String email;
+
+    private String username;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
@@ -29,8 +31,8 @@ public class User implements GetUserDTO{
     public User() {
     }
 
-    public User(String username) {
-        this.username = username;
+    public User(Long id) {
+        this.id = id;
     }
 
     public String getUsername() {
@@ -55,6 +57,10 @@ public class User implements GetUserDTO{
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getEmail() {

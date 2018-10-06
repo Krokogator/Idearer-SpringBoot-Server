@@ -15,7 +15,7 @@ public class CommentService {
     CommentRepository commentRepository;
 
     public Comment addComment(Comment comment, Long articleId, Long commentId) {
-        Comment commentDB = new Comment(comment.getContent(), new Article(articleId), (commentId == null) ? null : new Comment(commentId), new User(CurrentUser.getName()));
+        Comment commentDB = new Comment(comment.getContent(), new Article(articleId), (commentId == null) ? null : new Comment(commentId), new User(CurrentUser.getId()));
         return commentRepository.save(commentDB);
     }
 
@@ -25,13 +25,13 @@ public class CommentService {
 
     public void likeArticle(Long id) {
         Comment comment = commentRepository.getById(id);
-        comment.getLikes().add(new User(CurrentUser.getName()));
+        comment.getLikes().add(new User(CurrentUser.getId()));
         commentRepository.save(comment);
     }
 
     public void dislikeArticle(Long id) {
         Comment comment = commentRepository.getById(id);
-        comment.getLikes().removeIf(x -> x.getUsername().equals(CurrentUser.getName()));
+        comment.getLikes().removeIf(x -> x.getId().equals(CurrentUser.getId()));
         commentRepository.save(comment);
     }
 

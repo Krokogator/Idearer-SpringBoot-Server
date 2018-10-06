@@ -1,24 +1,36 @@
 package com.krokogator.spring.resources.category;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
 public class Category {
 
-    @Id
-    private String title;
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String name;
 
     public Category(){}
 
-    public Category(String name ) {
-        this.title = name; }
-
-    public String getName() {
-        return title;
+    public Category(Long id) {
+        this.id = id;
     }
 
-    public void setName(String title) {
-        this.title = title;
+    public Category(String name ) {
+        this.name = name; }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

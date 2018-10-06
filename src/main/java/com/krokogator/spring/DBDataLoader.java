@@ -58,14 +58,14 @@ public class DBDataLoader implements ApplicationRunner {
             categoryRepository.save((new Category("Games")));
 
             //Ramen
-            articleRepository.save(new Article("Ramen", "B8y3SSmz4sg", new User("admin"), new Category("Food")));
-            commentRepository.save(new Comment("Looks amazing!", new Article(1L), null, new User("admin")));
-            commentRepository.save(new Comment("I didn't like the last part :|", new Article(1L), new Comment(1L), new User("user")));
+            articleRepository.save(new Article("Ramen", "B8y3SSmz4sg", new User(1L), new Category(1L)));
+            commentRepository.save(new Comment("Looks amazing!", new Article(1L), null, new User(1L)));
+            commentRepository.save(new Comment("I didn't like the last part :|", new Article(1L), new Comment(1L), new User(2L)));
 
             //Overwatch
-            articleRepository.save(new Article("Doomfist proplays", "2pNCQdGvaKU", new User("user"), new Category("Games")));
-            commentRepository.save(new Comment("Wowowowow", new Article(2L), null, new User("user")));
-            commentRepository.save(new Comment("What a player!!", new Article(2L), null, new User("admin")));
+            articleRepository.save(new Article("Doomfist proplays", "2pNCQdGvaKU", new User(2L), new Category(2L)));
+            commentRepository.save(new Comment("Wowowowow", new Article(2L), null, new User(2L)));
+            commentRepository.save(new Comment("What a player!!", new Article(2L), null, new User(1L)));
         }
     }
 

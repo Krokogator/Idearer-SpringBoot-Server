@@ -47,7 +47,7 @@ public class Article {
     @PostLoad
     private void Load(){
         likesCount = likes.size();
-        liked = likes.stream().anyMatch(x -> x.getUsername().equals(CurrentUser.getName()));
+        liked = likes.stream().anyMatch(x -> x.getId().equals(CurrentUser.getId()));
         commentsCount = comments.size();
     }
 

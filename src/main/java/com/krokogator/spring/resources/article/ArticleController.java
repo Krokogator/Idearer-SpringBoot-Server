@@ -22,7 +22,7 @@ public class ArticleController {
         Article articleDB = new Article();
         articleDB.setTitle(article.title);
         articleDB.setContent(article.content);
-        articleDB.setCategory(new Category(article.category.title));
+        articleDB.setCategory(new Category(article.category.id));
 
         return articleService.addArticle(articleDB);
     }
@@ -47,7 +47,7 @@ public class ArticleController {
 
     @GetMapping
     public List<Article> getArticles(
-            @RequestParam(required = false) String username,
+            @RequestParam(required = false) Long authorId,
             @RequestParam(required = false) String categoryName,
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer pageSize,
@@ -56,7 +56,7 @@ public class ArticleController {
         page = (page == null) ? 0 : page;
         pageSize = (pageSize == null) ? 1000 : pageSize;
         categoryName = (categoryName == null) ? null : categoryName.toLowerCase();
-        return articleService.getArticles(username, categoryName, page, pageSize);
+        return articleService.getArticles(authorId, categoryName, page, pageSize);
     }
 
     @PatchMapping("/{id}")
@@ -65,7 +65,7 @@ public class ArticleController {
         articleDB.setTitle(article.title);
         articleDB.setContent(article.content);
         if(article.category != null){
-            articleDB.setCategory(new Category(article.category.title));
+            articleDB.setCategory(new Category(article.category.id));
         }
 
 

@@ -25,7 +25,7 @@ public class CategoryController {
 
     @PatchMapping(value = "/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public Category updateCategory(@RequestBody RequestBodyCategory category, @PathVariable String id) throws ClientErrorException {
+    public Category updateCategory(@RequestBody RequestBodyCategory category, @PathVariable long id) throws ClientErrorException {
         Category categoryDB = new Category();
         categoryDB.setName(category.name);
         return categoryService.updateCategory(id, categoryDB);
@@ -33,7 +33,7 @@ public class CategoryController {
 
     @DeleteMapping(value = "/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public void deleteCategory(@PathVariable String id) throws ClientErrorException {
+    public void deleteCategory(@PathVariable long id) throws ClientErrorException {
         categoryService.deleteCategory(id);
     }
 
