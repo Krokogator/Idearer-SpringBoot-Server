@@ -21,7 +21,7 @@ spring:
     password: ${DATABASE_PASSWORD}
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: create
     #Logging sql commands
     show-sql: true
 
