@@ -16,13 +16,13 @@ public class CategoryDatabaseIntegrityValidator {
     ClientErrorResposeThrower clientErrorResposeThrower;
 
     public void validateNameAlreadyExists(String categoryName) throws ClientErrorException {
-        if(categoryRepository.existsCategoryByName(categoryName)){
+        if(categoryRepository.existsCategoryByTitle(categoryName)){
             clientErrorResposeThrower.throwNotFound("{name} == "+categoryName+" already exists");
         }
     }
 
-    public void validateExistance(long id) throws ClientErrorException{
-        if(!categoryRepository.existsById(id)){
+    public void validateExistance(String id) throws ClientErrorException{
+        if(!categoryRepository.existsCategoryByTitle(id)){
             clientErrorResposeThrower.throwNotFound("{id} == "+id+" not found");
         }
     }

@@ -38,13 +38,13 @@ public class UserController {
         return userService.saveUser(user);
     }
 
-    @PostMapping("/login")
-    @PreAuthorize("hasRole('USER')")
+    @GetMapping("/login")
+    //@PreAuthorize("hasRole('USER')")
     @ApiResponses(value = {
             @ApiResponse(code = 401, message = "Unauthorized")
     })
-    public Long loginUser() {
-        return CurrentUser.getId();
+    public String loginUser() {
+        return CurrentUser.getName();
     }
 
     @GetMapping
@@ -56,8 +56,8 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(code = 404, message = "Not Found")
     })
-    public GetUserDTO getUser(@PathVariable Long id) throws ClientErrorException {
-        return userService.getUser(id);
+    public GetUserDTO getUser(@PathVariable String username) throws ClientErrorException {
+        return userService.getUser(username);
     }
 
     @PatchMapping(value = "/{id}")
@@ -69,7 +69,7 @@ public class UserController {
             @ApiResponse(code = 403, message = "Forbidden"),
             @ApiResponse(code = 404, message = "Not Found")
     })
-    public void patchUser(@PathVariable Long id, @RequestBody @Validated PatchUserDTO user) {
-        userService.patchUser(id, user);
+    public void patchUser(@PathVariable String username, @RequestBody @Validated PatchUserDTO user) {
+        userService.patchUser(username, user);
     }
 }

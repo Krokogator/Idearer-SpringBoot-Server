@@ -5,9 +5,7 @@ import org.springframework.data.repository.CrudRepository;
 
 import java.util.Optional;
 
-public interface UserRepository extends CrudRepository<User, Long>, JpaSpecificationExecutor<User> {
+public interface UserRepository extends CrudRepository<User, String>, JpaSpecificationExecutor<User> {
 
     Optional<User> findByUsernameIgnoreCase(String username);
-
-    User getById(Long id);
 }
