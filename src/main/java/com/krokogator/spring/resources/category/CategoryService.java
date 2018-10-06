@@ -14,30 +14,29 @@ public class CategoryService {
     private CategoryRepository categoryRepository;
 
     public Category addCategory(Category category) throws ClientErrorException {
-        if(categoryRepository.findByTitle(category.getTitle()).isPresent()) {
-            throw new ClientErrorException(HttpStatus.CONFLICT, "Category '"+category.getTitle()+"' alread exists.");
+        if(categoryRepository.findByNameIgnoreCase(category.getName()).isPresent()) {
+            throw new ClientErrorException(HttpStatus.CONFLICT, "Category '"+category.getId()+"' alread exists.");
         }
         return categoryRepository.save(category);
     }
 
-    public Category updateCategory(String title, Category category) throws ClientErrorException {
-         Category categoryDb = categoryRepository.findByTitle(title).orElseThrow(()-> new ClientErrorException(HttpStatus.NOT_FOUND, "Category not found"));
-
-        if(category.getName() != null){
-            categoryDb.setName(category.getName());
-        }
-
+    public Category updateCategory(Long id, Category dto) throws ClientErrorException {
         //Get category if exists
-        Category category = categoryRepository.findByTitle(titleId).orElseThrow(() -> new ClientErrorException(HttpStatus.NOT_FOUND, "Category '"+titleId+"' not found."));
+        Category category = categoryRepository.findById(id).orElseThrow(() -> new ClientErrorException(HttpStatus.NOT_FOUND, "Category '"+id+"' not found."));
+
+        if(categoryRepository.findByNameIgnoreCase(dto.getName()).isPresent()) {
+            throw new ClientErrorException(HttpStatus.CONFLICT, "Category '"+dto.getName()+"' already exists.");
+        }
 
         //Update category title
-        category.setTitle(dto.getTitle());
+        category.setName(category.getName());
 
         return categoryRepository.save(category);
     }
 
-    public void deleteCategory(String title) throws ClientErrorException {
-        categoryRepository.deleteById(title);
+    public void deleteCategory(Long id) throws ClientErrorException {
+        Category category = categoryRepository.findById(id).orElseThrow(() -> new ClientErrorException(HttpStatus.NOT_FOUND, "Category '"+id+"' not found."));
+        categoryRepository.delete(category);
     }
 
     public List<Category> getAllCategories() {
