@@ -21,7 +21,7 @@ public class ArticleService {
 
     // @PostAuthorize("hasRole('ADMIN') OR @loggedInUser.getId() == #article.author.id ")
     public Article addArticle(Article article) {
-        article.setUser(new User(CurrentUser.getId()));
+        article.setUser(new User(CurrentUser.getName()));
         //Article articleDB = new Article(article.getTitle(), article.getContent());
         //articleDB.setUser(new User(userId));
         //articleDB.setCategory(new Category(categoryId));
@@ -38,36 +38,36 @@ public class ArticleService {
 
     public void likeArticle(Long id) {
         Article article = articleRepository.getById(id);
-        article.getLikes().add(new User(CurrentUser.getId()));
+        article.getLikes().add(new User(CurrentUser.getName()));
         articleRepository.save(article);
     }
 
     public void dislikeArticle(Long id) {
         Article article = articleRepository.getById(id);
-        article.getLikes().removeIf(x -> x.getId().equals(CurrentUser.getId()));
+        article.getLikes().removeIf(x -> x.getUsername().equals(CurrentUser.getName()));
         articleRepository.save(article);
     }
 
-    public List<Article> getArticles(Long authorId, String categoryName, Integer page, Integer pageSize){
+    public List<Article> getArticles(String userName, String categoryName, Integer page, Integer pageSize){
 
         Pageable pageable = PageRequest.of(page, pageSize);
 
-        if(authorId == null && categoryName == null){
+        if(userName == null && categoryName == null){
             return articleRepository.findAllByOrderByCreatedDesc(pageable).getContent();
         } else if (categoryName == null){
-            return articleRepository.findAllByUserIdOrderByCreatedDesc(authorId, pageable).getContent();
-        } else if (authorId == null){
-            return articleRepository.findAllByCategoryNameIgnoreCaseOrderByCreatedDesc(categoryName, pageable).getContent();
+            return articleRepository.findAllByUserUsernameOrderByCreatedDesc(userName, pageable).getContent();
+        } else if (userName == null){
+            return articleRepository.findAllByCategoryTitleIgnoreCaseOrderByCreatedDesc(categoryName, pageable).getContent();
         }
 
-        return articleRepository.findAllByUserIdAndCategoryNameIgnoreCaseOrderByCreatedDesc(authorId, categoryName, pageable).getContent();
+        return articleRepository.findAllByUserUsernameAndCategoryTitleIgnoreCaseOrderByCreatedDesc(userName, categoryName, pageable).getContent();
     }
 
     public Article updateArticle(Article article, Long articleId) {
         Article articleDB = articleRepository.getById(articleId);
         if(article.getTitle() != null) articleDB.setTitle(article.getTitle());
         if(article.getContent() != null) articleDB.setContent(article.getContent());
-        if(article.getCategory() != null) articleDB.setCategory(new Category(article.getCategory().getId()));
+        if(article.getCategory() != null) articleDB.setCategory(new Category(article.getCategory().getName()));
         return articleRepository.save(articleDB);
     }
 }
