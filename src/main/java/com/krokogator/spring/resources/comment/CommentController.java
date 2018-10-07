@@ -51,14 +51,6 @@ public class CommentController {
         return commentService.getCommentsByArticleId(articleId);
     }
 
-    @PatchMapping(value = "/{id}/like")
-    public void likeComment(@PathVariable Long id){
-        commentService.likeArticle(id);
-    }
-
-    @PatchMapping(value = "/{id}/dislike")
-    public void dislikeComment(@PathVariable Long id) { commentService.dislikeArticle(id); }
-
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     @ApiResponses(value = {
@@ -70,17 +62,14 @@ public class CommentController {
     }
 
     @PatchMapping("/{id}")
-    @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @ApiResponses(value = {
             @ApiResponse(code = 400, message = "Bad Request"),
             @ApiResponse(code = 401, message = "Unauthorized"),
             @ApiResponse(code = 404, message = "Not found")
     })
-    public Comment updateComment(@PathVariable Long id, @RequestBody @Validated({PatchCommentValidation.class, Default.class}) PostCommentDTO dto) throws ClientErrorException {
-        Comment comment = new Comment();
-        comment.setContent(dto.content);
-        return commentService.updateComment(id, comment);
+    public void updateComment(@PathVariable Long id, @RequestBody @Validated({PatchCommentValidation.class, Default.class}) PostCommentDTO dto) throws ClientErrorException {
+        commentService.updateComment(id, dto);
     }
 
 }

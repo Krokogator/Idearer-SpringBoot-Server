@@ -3,6 +3,7 @@ package com.krokogator.spring.resources.comment;
 import com.krokogator.spring.error.client.ClientErrorException;
 import com.krokogator.spring.resources.article.Article;
 import com.krokogator.spring.resources.article.ArticleRepository;
+import com.krokogator.spring.resources.comment.dto.PostCommentDTO;
 import com.krokogator.spring.resources.user.CurrentUser;
 import com.krokogator.spring.resources.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,16 +37,14 @@ public class CommentService {
         return commentRepository.getCommentsByArticleIdAndParentCommentId(id, null);
     }
 
-    public void likeArticle(Long id) {
-        Comment comment = commentRepository.getById(id);
+    public Comment likeComment(Comment comment) {
         comment.getLikes().add(new User(CurrentUser.getId()));
-        commentRepository.save(comment);
+        return commentRepository.save(comment);
     }
 
-    public void dislikeArticle(Long id) {
-        Comment comment = commentRepository.getById(id);
+    public Comment dislikeComment(Comment comment) {
         comment.getLikes().removeIf(x -> x.getId().equals(CurrentUser.getId()));
-        commentRepository.save(comment);
+        return commentRepository.save(comment);
     }
 
 
@@ -57,12 +56,18 @@ public class CommentService {
         }
     }
 
-    public Comment updateComment(Long id, Comment dto) throws ClientErrorException {
+
+    public void updateComment(Long id, PostCommentDTO dto) throws ClientErrorException {
         //Check if comment exists
         Comment commentDB = commentRepository.findById(id).orElseThrow(() -> new ClientErrorException(HttpStatus.NOT_FOUND, "Comment '"+id+"' not found."));
         //Update content if provided
-        if(dto.getContent() != null) commentDB.setContent(dto.getContent());
+        if(dto.content != null) commentDB.setContent(dto.content);
 
-        return commentRepository.save(commentDB);
+        if(dto.liked != null) {
+            if (dto.liked) commentDB = likeComment(commentDB);
+            else commentDB = dislikeComment(commentDB);
+        }
+
+        commentRepository.save(commentDB);
     }
 }

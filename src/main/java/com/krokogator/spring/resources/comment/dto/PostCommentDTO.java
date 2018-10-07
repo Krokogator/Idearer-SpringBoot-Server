@@ -21,6 +21,9 @@ public class PostCommentDTO {
     @Valid
     private IdReferenceDTO article;
 
+    @Null(groups = PostCommentValidation.class)
+    public Boolean liked;
+
     public IdReferenceDTO getArticle() {
         return article;
     }
