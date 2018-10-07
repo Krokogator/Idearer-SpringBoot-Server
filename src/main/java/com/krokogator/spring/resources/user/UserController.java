@@ -43,8 +43,8 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(code = 401, message = "Unauthorized")
     })
-    public Long loginUser() {
-        return CurrentUser.getId();
+    public GetUserDTO loginUser() throws ClientErrorException {
+        return userService.getUser(CurrentUser.getId());
     }
 
     @GetMapping

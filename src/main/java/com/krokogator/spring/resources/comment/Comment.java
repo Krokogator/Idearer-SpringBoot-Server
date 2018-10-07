@@ -35,10 +35,6 @@ public class Comment {
     private boolean liked;
 
     @PostLoad
-    @PostUpdate
-    @PostPersist
-    @PreUpdate
-    @PrePersist
     private void Load(){
         likesCount = likes.size();
         liked = likes.stream().anyMatch(x -> x.getId().equals(CurrentUser.getId()));
