@@ -1,11 +1,27 @@
 package com.krokogator.spring.resources.comment;
 
+import com.krokogator.spring.error.client.ClientErrorException;
+import com.krokogator.spring.resources.article.Article;
+import com.krokogator.spring.resources.comment.dto.PostCommentDTO;
 import com.krokogator.spring.resources.comment.projection.RequestBodyComment;
+import com.krokogator.spring.resources.comment.validationgroup.PatchCommentValidation;
+import com.krokogator.spring.resources.comment.validationgroup.PostCommentValidation;
+import com.krokogator.spring.resources.user.User;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import javax.validation.groups.Default;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @Api(tags = "Comments")
@@ -16,11 +32,18 @@ public class CommentController {
     CommentService commentService;
 
     @PostMapping
-    public Comment addComment(
-            @RequestParam(value = "articleId") Long articleId,
-            @RequestParam(value = "commentId", required = false) Long commentId,
-            @RequestBody Comment comment){
-        return commentService.addComment(comment, articleId, commentId);
+    @PreAuthorize("hasRole('USER')")
+    @ResponseStatus(HttpStatus.CREATED)
+    @ApiResponses(value = {
+            @ApiResponse(code = 400, message = "Bad Request"),
+            @ApiResponse(code = 401, message = "Unauthorized"),
+            @ApiResponse(code = 404, message = "Not found")
+    })
+    public Comment addComment(@RequestBody @Validated({PostCommentValidation.class, Default.class}) PostCommentDTO dto) throws ClientErrorException {
+        Comment comment = new Comment();
+        comment.setContent(dto.content);
+        comment.setArticle(new Article(dto.getArticle().getId()));
+        return commentService.addComment(comment);
     }
 
     @GetMapping
@@ -37,15 +60,27 @@ public class CommentController {
     public void dislikeComment(@PathVariable Long id) { commentService.dislikeArticle(id); }
 
     @DeleteMapping("/{id}")
-    public void deleteComment(@PathVariable Long id){
+    @ResponseStatus(HttpStatus.OK)
+    @ApiResponses(value = {
+            @ApiResponse(code = 401, message = "Unauthorized"),
+            @ApiResponse(code = 404, message = "Not found")
+    })
+    public void deleteComment(@PathVariable Long id) throws ClientErrorException {
         commentService.deleteComment(id);
     }
 
     @PatchMapping("/{id}")
-    public Comment updateComment(@PathVariable Long id, @RequestBody RequestBodyComment comment){
-        Comment commentDB = new Comment();
-        commentDB.setContent(comment.content);
-        return commentService.updateComment(id, commentDB);
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiResponses(value = {
+            @ApiResponse(code = 400, message = "Bad Request"),
+            @ApiResponse(code = 401, message = "Unauthorized"),
+            @ApiResponse(code = 404, message = "Not found")
+    })
+    public Comment updateComment(@PathVariable Long id, @RequestBody @Validated({PatchCommentValidation.class, Default.class}) PostCommentDTO dto) throws ClientErrorException {
+        Comment comment = new Comment();
+        comment.setContent(dto.content);
+        return commentService.updateComment(id, comment);
     }
 
 }
