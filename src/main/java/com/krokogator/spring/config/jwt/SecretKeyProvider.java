@@ -1,4 +1,4 @@
-package com.krokogator.spring.config;
+package com.krokogator.spring.config.jwt;
 
 import org.springframework.stereotype.Component;
 
@@ -15,7 +15,7 @@ import java.security.cert.CertificateException;
 @Component
 public class SecretKeyProvider {
 
-    public String getKey() throws URISyntaxException,
+    public String getKey() throws
             KeyStoreException, IOException,
             NoSuchAlgorithmException, CertificateException, UnrecoverableKeyException{
         return new String( getKeyPair().getPublic().getEncoded(), "UTF-8" );

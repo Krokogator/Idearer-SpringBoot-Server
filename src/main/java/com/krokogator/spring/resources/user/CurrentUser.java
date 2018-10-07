@@ -1,6 +1,6 @@
 package com.krokogator.spring.resources.user;
 
-import com.krokogator.spring.config.IdAwareOAuth2Request;
+import com.krokogator.spring.config.jwt.IdAwareOAuth2Request;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;

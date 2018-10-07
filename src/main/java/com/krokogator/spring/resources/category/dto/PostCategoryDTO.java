@@ -9,5 +9,5 @@ public class PostCategoryDTO {
 
     @NotNull(groups = PostCategoryValidation.class)
     @Size(min = 1, max = 50)
-    public String title;
+    public String name;
 }

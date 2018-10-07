@@ -1,11 +1,11 @@
-package com.krokogator.spring.config;
+package com.krokogator.spring.config.jwt;
 
+import com.krokogator.spring.resources.user.SecureUser;
 import com.krokogator.spring.resources.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
-import org.springframework.security.oauth2.provider.token.DefaultAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 
 import java.util.HashMap;
@@ -20,15 +20,17 @@ public class CustomJwtAccessTokenConverter extends JwtAccessTokenConverter {
     @Override
     public OAuth2AccessToken enhance(OAuth2AccessToken accessToken, OAuth2Authentication authentication) {
         Map<String, Object> info = new LinkedHashMap<>(accessToken.getAdditionalInformation());
-        System.out.println(authentication.getPrincipal());
-        System.out.println(authentication.getUserAuthentication().getPrincipal().toString());
-        System.out.println(authentication.getCredentials().toString());
+
         //Here put additional DATA
-        info.put("userId", userService.loadUserByUsername(authentication.getName()).getId());
+        SecureUser authenticatedUser = (SecureUser) authentication.getPrincipal();
+        info.put("userId", authenticatedUser.getId());
         DefaultOAuth2AccessToken customAccessToken = new DefaultOAuth2AccessToken(accessToken);
         customAccessToken.setAdditionalInformation(info);
 
+        //Convert into accessToken
         accessToken = super.enhance(customAccessToken, authentication);
+
+        //Clear additional DATA from response body
         ((DefaultOAuth2AccessToken) accessToken).setAdditionalInformation(new HashMap<>());
 
         return accessToken;

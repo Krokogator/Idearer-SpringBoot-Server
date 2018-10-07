@@ -1,4 +1,4 @@
-package com.krokogator.spring.config;
+package com.krokogator.spring.config.jwt;
 
 
 import org.springframework.security.oauth2.provider.OAuth2Request;

@@ -1,4 +1,4 @@
-package com.krokogator.spring.config;
+package com.krokogator.spring.filter;
 
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;

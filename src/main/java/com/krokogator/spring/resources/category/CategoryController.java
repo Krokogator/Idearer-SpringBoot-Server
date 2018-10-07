@@ -35,7 +35,7 @@ public class CategoryController {
     })
     public Category addCategory(@RequestBody @Validated({PostCategoryValidation.class, Default.class}) PostCategoryDTO dto) throws ClientErrorException {
         Category category = new Category();
-        category.setName(dto.title);
+        category.setName(dto.name);
         return categoryService.addCategory(category);
     }
 
@@ -51,7 +51,7 @@ public class CategoryController {
     })
     public Category updateCategory(@RequestBody @Validated PostCategoryDTO dto, @PathVariable Long id) throws ClientErrorException {
         Category category = new Category();
-        category.setName(dto.title);
+        category.setName(dto.name);
         return categoryService.updateCategory(id, category);
     }
 

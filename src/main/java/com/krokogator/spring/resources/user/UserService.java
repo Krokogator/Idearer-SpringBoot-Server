@@ -74,7 +74,6 @@ public class UserService implements UserDetailsService {
     @Override
     public SecureUser loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        System.out.println(username);
         Optional<User> temp = userRepository.findByUsernameIgnoreCase(username);
         User user = temp.orElseThrow(() -> new UsernameNotFoundException(username + " was not found"));
 

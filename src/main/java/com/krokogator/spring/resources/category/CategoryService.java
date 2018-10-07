@@ -15,7 +15,7 @@ public class CategoryService {
 
     public Category addCategory(Category category) throws ClientErrorException {
         if(categoryRepository.findByNameIgnoreCase(category.getName()).isPresent()) {
-            throw new ClientErrorException(HttpStatus.CONFLICT, "Category '"+category.getId()+"' alread exists.");
+            throw new ClientErrorException(HttpStatus.CONFLICT, "Category '"+category.getId()+"' already exists.");
         }
         return categoryRepository.save(category);
     }

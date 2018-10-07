@@ -53,7 +53,7 @@ public class DBDataLoader implements ApplicationRunner {
             user2.setRole("USER");
             userRepository.save(user2);
 
-            //Jedzenie id:1 Gry id:2
+            //Food id:1 Games id:2
             categoryRepository.save((new Category("Food")));
             categoryRepository.save((new Category("Games")));
 

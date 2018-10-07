@@ -1,11 +1,6 @@
 #app port
 server:
   port: 8080
-  servlet:
-    session:
-      cookie:
-        secure: false
-        http-only: false
 
 #actuator port (/health etc.)
 #management:
@@ -21,7 +16,7 @@ spring:
     password: ${DATABASE_PASSWORD}
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: none
     #Logging sql commands
     show-sql: true
 
