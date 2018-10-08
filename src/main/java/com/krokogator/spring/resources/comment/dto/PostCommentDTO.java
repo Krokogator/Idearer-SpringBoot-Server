@@ -4,7 +4,6 @@ import com.krokogator.spring.resources.IdReferenceDTO;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
 import javax.validation.constraints.Size;
 
 public class PostCommentDTO {
@@ -20,9 +19,6 @@ public class PostCommentDTO {
 
     @Valid
     private IdReferenceDTO parentComment;
-
-    @Null
-    public Boolean liked;
 
     public IdReferenceDTO getArticle() {
         return article;
