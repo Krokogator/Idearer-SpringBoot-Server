@@ -1,11 +1,16 @@
 package com.krokogator.spring.resources.article;
 
+import com.krokogator.spring.error.client.ClientErrorException;
+import com.krokogator.spring.resources.article.dto.PostArticleDTO;
 import com.krokogator.spring.resources.category.Category;
+import com.krokogator.spring.resources.category.CategoryRepository;
 import com.krokogator.spring.resources.user.CurrentUser;
 import com.krokogator.spring.resources.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.security.RolesAllowed;
@@ -19,33 +24,39 @@ public class ArticleService {
     @Autowired
     private ArticleRepository articleRepository;
 
-    // @PostAuthorize("hasRole('ADMIN') OR @loggedInUser.getId() == #article.author.id ")
-    public Article addArticle(Article article) {
+    @Autowired
+    private CategoryRepository categoryRepository;
+
+    public Article addArticle(Article article) throws ClientErrorException {
+        //Set author as currently logged in user
         article.setUser(new User(CurrentUser.getId()));
-        //Article articleDB = new Article(article.getTitle(), article.getContent());
-        //articleDB.setUser(new User(userId));
-        //articleDB.setCategory(new Category(categoryId));
+
+        //Check if category exists
+        categoryRepository.findById(article.getCategory().getId())
+                .orElseThrow(() -> new ClientErrorException(HttpStatus.NOT_FOUND, "Category '"+article.getCategory().getId()+"' not found."));
+
         return articleRepository.save(article);
     }
 
-    public Article getArticle(Long id) {
-        return articleRepository.getById(id);
+    public Article getArticle(Long id) throws ClientErrorException {
+        Article article = articleRepository.findById(id)
+                .orElseThrow(() -> new ClientErrorException(HttpStatus.NOT_FOUND, "Article '"+id+"' not found."));
+        return article;
     }
 
-    public void deleteArticle(Long id) {
-        articleRepository.deleteById(id);
+    public void deleteArticle(Long id) throws ClientErrorException {
+        Article article = getArticle(id);
+        articleRepository.delete(article);
     }
 
-    public void likeArticle(Long id) {
-        Article article = articleRepository.getById(id);
+    public Article likeArticle(Article article) {
         article.getLikes().add(new User(CurrentUser.getId()));
-        articleRepository.save(article);
+        return articleRepository.save(article);
     }
 
-    public void dislikeArticle(Long id) {
-        Article article = articleRepository.getById(id);
+    public Article dislikeArticle(Article article) {
         article.getLikes().removeIf(x -> x.getId().equals(CurrentUser.getId()));
-        articleRepository.save(article);
+        return articleRepository.save(article);
     }
 
     public List<Article> getArticles(Long authorId, String categoryName, Integer page, Integer pageSize){
@@ -63,11 +74,22 @@ public class ArticleService {
         return articleRepository.findAllByUserIdAndCategoryNameIgnoreCaseOrderByCreatedDesc(authorId, categoryName, pageable).getContent();
     }
 
-    public Article updateArticle(Article article, Long articleId) {
-        Article articleDB = articleRepository.getById(articleId);
-        if(article.getTitle() != null) articleDB.setTitle(article.getTitle());
-        if(article.getContent() != null) articleDB.setContent(article.getContent());
-        if(article.getCategory() != null) articleDB.setCategory(new Category(article.getCategory().getId()));
-        return articleRepository.save(articleDB);
+    public Article updateArticle(PostArticleDTO dto, Long articleId) throws ClientErrorException {
+        //Check if article exists
+        Article article = articleRepository.findById(articleId)
+                .orElseThrow(() ->  new ClientErrorException(HttpStatus.NOT_FOUND, "Article '"+articleId+"' not found."));
+        //Update title if provided
+        if(dto.title != null) article.setTitle(dto.title);
+        //Update content if provided
+        if(dto.content != null) article.setContent(dto.content);
+        //Update category if provided
+        if(dto.getCategory() != null) article.setCategory(new Category(dto.getCategory().getId()));
+        //Update liked if provided
+        if(dto.liked != null) {
+            if (dto.liked) article = likeArticle(article);
+            else article = dislikeArticle(article);
+        }
+
+        return articleRepository.save(article);
     }
 }

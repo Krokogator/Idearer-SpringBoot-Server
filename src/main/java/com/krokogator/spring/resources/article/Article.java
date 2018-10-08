@@ -37,7 +37,7 @@ public class Article {
     private boolean liked;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "article")
+    @OneToMany(mappedBy = "article", cascade = CascadeType.REMOVE)
     private List<Comment> comments;
 
     @ApiModelProperty(readOnly = true)
