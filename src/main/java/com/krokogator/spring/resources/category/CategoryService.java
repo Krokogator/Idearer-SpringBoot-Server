@@ -29,7 +29,7 @@ public class CategoryService {
         }
 
         //Update category title
-        category.setName(category.getName());
+        if(dto.getName() != null) category.setName(dto.getName());
 
         return categoryRepository.save(category);
     }
