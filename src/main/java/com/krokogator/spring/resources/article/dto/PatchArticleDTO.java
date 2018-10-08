@@ -3,20 +3,18 @@ package com.krokogator.spring.resources.article.dto;
 import com.krokogator.spring.resources.IdReferenceDTO;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-public class PostArticleDTO {
+public class PatchArticleDTO {
 
-    @NotNull
     @Size(min = 1)
     public String title;
 
-    @NotNull
     @Size(min = 1)
     public String content;
 
-    @NotNull
+    public Boolean liked;
+
     @Valid
     private IdReferenceDTO category;
 

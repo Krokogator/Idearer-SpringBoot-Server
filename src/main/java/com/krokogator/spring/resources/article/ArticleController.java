@@ -1,8 +1,8 @@
 package com.krokogator.spring.resources.article;
 
 import com.krokogator.spring.error.client.ClientErrorException;
+import com.krokogator.spring.resources.article.dto.PatchArticleDTO;
 import com.krokogator.spring.resources.article.dto.PostArticleDTO;
-import com.krokogator.spring.resources.article.validationgroup.PostArticleValidation;
 import com.krokogator.spring.resources.category.Category;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiResponse;
@@ -12,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.groups.Default;
 import java.util.List;
 
 @RestController
@@ -30,14 +29,8 @@ public class ArticleController {
             @ApiResponse(code = 401, message = "Unauthorized"),
             @ApiResponse(code = 404, message = "Not Found")
     })
-    public Article addArticle(@RequestBody @Validated({PostArticleValidation.class, Default.class}) PostArticleDTO article) throws ClientErrorException {
-
-        Article articleDB = new Article();
-        articleDB.setTitle(article.title);
-        articleDB.setContent(article.content);
-        articleDB.setCategory(new Category(article.getCategory().getId()));
-
-        return articleService.addArticle(articleDB);
+    public Article addArticle(@RequestBody @Validated PostArticleDTO dto) throws ClientErrorException {
+        return articleService.addArticle(dto);
     }
 
     @GetMapping("/{id}")
@@ -64,9 +57,6 @@ public class ArticleController {
             @RequestParam(required = false) Integer pageSize,
             @RequestParam(required = false, name = "UNIMPLEMENTED sort") String sort,
             @RequestParam(required = false, name = "UNIMPLEMENTED verified") Boolean verified){
-        page = (page == null) ? 0 : page;
-        pageSize = (pageSize == null) ? 1000 : pageSize;
-        categoryName = (categoryName == null) ? null : categoryName.toLowerCase();
         return articleService.getArticles(authorId, categoryName, page, pageSize);
     }
 
@@ -78,7 +68,7 @@ public class ArticleController {
             @ApiResponse(code = 403, message = "Forbidden"),
             @ApiResponse(code = 404, message = "Not Found")
     })
-    public Article updateArticle(@RequestBody @Validated PostArticleDTO articleDTO, @PathVariable Long id) throws ClientErrorException {
+    public Article updateArticle(@RequestBody @Validated PatchArticleDTO articleDTO, @PathVariable Long id) throws ClientErrorException {
         return articleService.updateArticle(articleDTO, id);
     }
 

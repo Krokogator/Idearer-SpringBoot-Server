@@ -1,9 +1,8 @@
 package com.krokogator.spring.resources.category;
 
 import com.krokogator.spring.error.client.ClientErrorException;
+import com.krokogator.spring.resources.category.dto.PatchCategoryDTO;
 import com.krokogator.spring.resources.category.dto.PostCategoryDTO;
-import com.krokogator.spring.resources.category.projection.RequestBodyCategory;
-import com.krokogator.spring.resources.category.validationgroup.PostCategoryValidation;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -13,7 +12,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.groups.Default;
 import java.util.List;
 
 @RestController
@@ -33,10 +31,8 @@ public class CategoryController {
             @ApiResponse(code = 403, message = "Forbidden"),
             @ApiResponse(code = 409, message = "Conflict")
     })
-    public Category addCategory(@RequestBody @Validated({PostCategoryValidation.class, Default.class}) PostCategoryDTO dto) throws ClientErrorException {
-        Category category = new Category();
-        category.setName(dto.name);
-        return categoryService.addCategory(category);
+    public Category addCategory(@RequestBody @Validated PostCategoryDTO dto) throws ClientErrorException {
+        return categoryService.addCategory(dto);
     }
 
     @PatchMapping(value = "/{id}")
@@ -49,10 +45,8 @@ public class CategoryController {
             @ApiResponse(code = 404, message = "Not Found"),
             @ApiResponse(code = 409, message = "Conflict")
     })
-    public Category updateCategory(@RequestBody @Validated PostCategoryDTO dto, @PathVariable Long id) throws ClientErrorException {
-        Category category = new Category();
-        category.setName(dto.name);
-        return categoryService.updateCategory(id, category);
+    public Category updateCategory(@RequestBody @Validated PatchCategoryDTO dto, @PathVariable Long id) throws ClientErrorException {
+        return categoryService.updateCategory(id, dto);
     }
 
     @DeleteMapping(value = "/{id}")
