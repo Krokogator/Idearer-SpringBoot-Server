@@ -1,6 +1,8 @@
 package com.krokogator.spring.resources.category;
 
 import com.krokogator.spring.error.client.ClientErrorException;
+import com.krokogator.spring.resources.category.dto.PatchCategoryDTO;
+import com.krokogator.spring.resources.category.dto.PostCategoryDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -13,23 +15,24 @@ public class CategoryService {
     @Autowired
     private CategoryRepository categoryRepository;
 
-    public Category addCategory(Category category) throws ClientErrorException {
-        if(categoryRepository.findByNameIgnoreCase(category.getName()).isPresent()) {
-            throw new ClientErrorException(HttpStatus.CONFLICT, "Category '"+category.getId()+"' already exists.");
-        }
+    public Category addCategory(PostCategoryDTO dto) throws ClientErrorException {
+        //Check if category name already exists
+        Category category = categoryRepository.findByNameIgnoreCase(dto.name)
+                .orElseThrow (()-> new ClientErrorException(HttpStatus.CONFLICT, "Category '"+dto.name+"' already exists."));
+
         return categoryRepository.save(category);
     }
 
-    public Category updateCategory(Long id, Category dto) throws ClientErrorException {
+    public Category updateCategory(Long id, PatchCategoryDTO dto) throws ClientErrorException {
         //Get category if exists
         Category category = categoryRepository.findById(id).orElseThrow(() -> new ClientErrorException(HttpStatus.NOT_FOUND, "Category '"+id+"' not found."));
 
-        if(categoryRepository.findByNameIgnoreCase(dto.getName()).isPresent()) {
-            throw new ClientErrorException(HttpStatus.CONFLICT, "Category '"+dto.getName()+"' already exists.");
+        if(categoryRepository.findByNameIgnoreCase(dto.name).isPresent()) {
+            throw new ClientErrorException(HttpStatus.CONFLICT, "Category '"+dto.name+"' already exists.");
         }
 
         //Update category title
-        if(dto.getName() != null) category.setName(dto.getName());
+        if(dto.name != null) category.setName(dto.name);
 
         return categoryRepository.save(category);
     }
