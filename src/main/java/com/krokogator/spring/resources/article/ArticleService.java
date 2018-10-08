@@ -39,8 +39,9 @@ public class ArticleService {
     }
 
     public Article getArticle(Long id) throws ClientErrorException {
-        return articleRepository.findById(id)
+        Article article = articleRepository.findById(id)
                 .orElseThrow(() -> new ClientErrorException(HttpStatus.NOT_FOUND, "Article '"+id+"' not found."));
+        return article;
     }
 
     public void deleteArticle(Long id) throws ClientErrorException {
@@ -81,6 +82,8 @@ public class ArticleService {
         if(dto.title != null) article.setTitle(dto.title);
         //Update content if provided
         if(dto.content != null) article.setContent(dto.content);
+        //Update category if provided
+        if(dto.getCategory() != null) article.setCategory(new Category(dto.getCategory().getId()));
         //Update liked if provided
         if(dto.liked != null) {
             if (dto.liked) article = likeArticle(article);
