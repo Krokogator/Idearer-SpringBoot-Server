@@ -34,8 +34,6 @@ spring:
   jackson:
     deserialization:
       FAIL_ON_UNKNOWN_PROPERTIES: false
-  profiles:
-    active: local
 
 security:
   oauth2:
