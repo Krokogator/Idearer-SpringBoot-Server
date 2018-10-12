@@ -12,8 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.core.env.Environment;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
+
+import java.util.Arrays;
 
 @Component
 public class DBDataLoader implements ApplicationRunner {
@@ -29,6 +32,9 @@ public class DBDataLoader implements ApplicationRunner {
 
     @Autowired
     private BCryptPasswordEncoder PASSWORD_ENCODER;
+
+    @Autowired
+    Environment env;
 
     @Value("${spring.jpa.hibernate.ddl-auto}")
     private String ddlAutoType;
@@ -56,7 +62,11 @@ public class DBDataLoader implements ApplicationRunner {
             //Food id:1 Games id:2
             categoryRepository.save((new Category("Food")));
             categoryRepository.save((new Category("Games")));
+            if(Arrays.asList(env.getActiveProfiles()).stream().anyMatch(x -> x.equalsIgnoreCase("test"))){
+                categoryRepository.save((new Category("ToModify")));
+                categoryRepository.save((new Category("ToDelete")));
 
+            }
             //Ramen
             articleRepository.save(new Article("Ramen", "B8y3SSmz4sg", new User(1L), new Category(1L)));
             commentRepository.save(new Comment("Looks amazing!", new Article(1L), null, new User(1L)));

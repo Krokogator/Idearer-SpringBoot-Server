@@ -9,7 +9,7 @@ spring:
       enabled: true
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: create
 
 security:
   oauth2:
