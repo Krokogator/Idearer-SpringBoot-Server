@@ -1,9 +1,10 @@
 package integration.authorization;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.krokogator.spring.resources.category.Category;
+import com.krokogator.spring.resources.category.CategoryController;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -16,6 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class CategoryAuthorizationTest extends AuthorizationTests {
 
     private final String endpoint = "/categories";
+
 
     // ANONYMOUS
 
