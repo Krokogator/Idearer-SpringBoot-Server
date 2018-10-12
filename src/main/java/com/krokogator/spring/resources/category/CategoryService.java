@@ -15,10 +15,15 @@ public class CategoryService {
     @Autowired
     private CategoryRepository categoryRepository;
 
+
+
     public Category addCategory(PostCategoryDTO dto) throws ClientErrorException {
         //Check if category name already exists
-        Category category = categoryRepository.findByNameIgnoreCase(dto.name)
-                .orElseThrow (()-> new ClientErrorException(HttpStatus.CONFLICT, "Category '"+dto.name+"' already exists."));
+        if (categoryRepository.findByNameIgnoreCase(dto.name).isPresent()){
+                throw new ClientErrorException(HttpStatus.CONFLICT, "Category '"+dto.name+"' already exists.");
+        }
+
+        Category category = new Category(dto.name);
 
         return categoryRepository.save(category);
     }
@@ -38,8 +43,8 @@ public class CategoryService {
     }
 
     public void deleteCategory(Long id) throws ClientErrorException {
-        Category category = categoryRepository.findById(id).orElseThrow(() -> new ClientErrorException(HttpStatus.NOT_FOUND, "Category '"+id+"' not found."));
-        categoryRepository.delete(category);
+        categoryRepository.findById(id).orElseThrow(() -> new ClientErrorException(HttpStatus.NOT_FOUND, "Category '"+id+"' not found."));
+        categoryRepository.deleteById(id);
     }
 
     public List<Category> getAllCategories() {

@@ -15,7 +15,7 @@ public class ClientErrorResponseBody {
     private int status;
     private String error;
     private String message;
-    private DataIntegrityViolationException details;
+    private String details;
 
     public ClientErrorResponseBody() {
         this.timestamp = new Date();
@@ -53,11 +53,11 @@ public class ClientErrorResponseBody {
         this.error = error;
     }
 
-    public DataIntegrityViolationException getDetails() {
+    public String getDetails() {
         return details;
     }
 
-    public void setDetails(DataIntegrityViolationException details) {
+    public void setDetails(String details) {
         this.details = details;
     }
 }
