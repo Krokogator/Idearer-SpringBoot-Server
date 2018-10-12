@@ -26,7 +26,10 @@ public class SQLExceptionHandler {
         clientErrorResponseBody.setStatus(HttpStatus.CONFLICT.value());
         clientErrorResponseBody.setError(HttpStatus.CONFLICT.getReasonPhrase());
         clientErrorResponseBody.setMessage(ex.getLocalizedMessage());
-        clientErrorResponseBody.setDetails(ex);
+        try{
+            clientErrorResponseBody.setDetails(ex.getMostSpecificCause().getMessage());
+        } catch (Exception e){}
+
         return new ResponseEntity<>(clientErrorResponseBody, HttpStatus.CONFLICT);
     }
 }
