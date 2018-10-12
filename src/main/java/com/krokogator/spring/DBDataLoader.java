@@ -62,11 +62,9 @@ public class DBDataLoader implements ApplicationRunner {
             //Food id:1 Games id:2
             categoryRepository.save((new Category("Food")));
             categoryRepository.save((new Category("Games")));
-            if(Arrays.asList(env.getActiveProfiles()).stream().anyMatch(x -> x.equalsIgnoreCase("test"))){
-                categoryRepository.save((new Category("ToModify")));
-                categoryRepository.save((new Category("ToDelete")));
+            categoryRepository.save((new Category("Ideas")));
+            categoryRepository.save((new Category("Technology")));
 
-            }
             //Ramen
             articleRepository.save(new Article("Ramen", "B8y3SSmz4sg", new User(1L), new Category(1L)));
             commentRepository.save(new Comment("Looks amazing!", new Article(1L), null, new User(1L)));
