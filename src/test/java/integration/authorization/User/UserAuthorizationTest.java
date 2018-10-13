@@ -46,11 +46,11 @@ public class UserAuthorizationTest extends IntegrationTest {
                         .content(asJsonString(postUserDTO)));
     }
 
-    public ResultActions patchUser() throws Exception {
+    public ResultActions patchUser(int id) throws Exception {
         PatchUserDTO patchUserDTO = new PatchUserDTO();
         patchUserDTO.email = "email2414215@gmail.com";
         return mockMvc.perform(
-                patch(endpoint + "/3")
+                patch(endpoint + "/" + id)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(patchUserDTO)));
     }

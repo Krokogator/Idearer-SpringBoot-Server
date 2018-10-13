@@ -33,7 +33,7 @@ public class UserUserAuthorizationTest extends UserAuthorizationTest {
 
     @Test
     @WithMockUser(roles = "USER")
-    public void givenAnonymous_whenGetUser_thenOk() throws Exception {
+    public void givenUser_whenGetUser_thenOk() throws Exception {
         super.getUser().andExpect(
                 status().isOk()
         );
@@ -41,7 +41,7 @@ public class UserUserAuthorizationTest extends UserAuthorizationTest {
 
     @Test
     @WithMockUser(roles = "USER")
-    public void givenAnonymous_whenGetAllUsers_thenOk() throws Exception {
+    public void givenUser_whenGetAllUsers_thenOk() throws Exception {
         super.getUser().andExpect(
                 status().isOk()
         );
@@ -49,7 +49,7 @@ public class UserUserAuthorizationTest extends UserAuthorizationTest {
 
     @Test
     @WithMockUser(roles = "USER")
-    public void givenAnonymous_whenRegisterUser_thenCreated() throws Exception {
+    public void givenUser_whenRegisterUser_thenCreated() throws Exception {
         super.registerUser().andExpect(
                 status().isCreated()
         );
@@ -57,15 +57,23 @@ public class UserUserAuthorizationTest extends UserAuthorizationTest {
 
     @Test
     @WithMockUser(roles = "USER")
-    public void givenAnonymous_whenPatchDifferentUser_thenForbidden() throws Exception {
-        super.patchUser().andExpect(
+    public void givenUser_whenPatchDifferentUser_thenForbidden() throws Exception {
+        super.patchUser(1).andExpect(
                 status().isForbidden()
         );
     }
 
     @Test
+    @WithMockUser(roles = "USER")
+    public void givenUser_whenPatchCurrentUser_thenNoContent() throws Exception {
+        super.patchUser(2).andExpect(
+                status().isNoContent()
+        );
+    }
+
+    @Test
     @WithMockUser(roles = "USER", username = "user", password = "user")
-    public void givenAnonymous_whenLogin_thenOk() throws Exception {
+    public void givenUser_whenLogin_thenOk() throws Exception {
         super.loginUser().andExpect(
                 status().isOk()
         );

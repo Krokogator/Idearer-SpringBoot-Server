@@ -16,8 +16,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
-
 @Component
 public class DBDataLoader implements ApplicationRunner {
 
@@ -69,7 +67,7 @@ public class DBDataLoader implements ApplicationRunner {
             //Food id:1 Games id:2
             categoryRepository.save((new Category("Food")));
             categoryRepository.save((new Category("Games")));
-            categoryRepository.save((new Category("Ideas")));
+            categoryRepository.save((new Category("Other")));
             categoryRepository.save((new Category("Technology")));
 
             //Ramen
@@ -81,6 +79,10 @@ public class DBDataLoader implements ApplicationRunner {
             articleRepository.save(new Article("Doomfist proplays", "2pNCQdGvaKU", new User(2L), new Category(2L)));
             commentRepository.save(new Comment("Wowowowow", new Article(2L), null, new User(2L)));
             commentRepository.save(new Comment("What a player!!", new Article(2L), null, new User(1L)));
+
+            //OtherArticle
+            articleRepository.save(new Article("Doomfist proplays", "2pNCQdGvaKU", new User(3L), new Category(3L)));
+            commentRepository.save(new Comment("Wowowowow", new Article(3L), null, new User(3L)));
         }
     }
 

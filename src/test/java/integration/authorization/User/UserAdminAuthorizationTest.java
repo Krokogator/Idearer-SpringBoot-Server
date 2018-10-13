@@ -36,9 +36,17 @@ public class UserAdminAuthorizationTest extends UserAuthorizationTest{
 
     @Test
     @WithMockUser(roles = "ADMIN", username = "admin", password = "admin")
-    public void givenAdmin_whenPatchUser_thenOk() throws Exception {
-        super.patchUser().andExpect(
-                status().isOk()
+    public void givenAdmin_whenPatchDifferentUser_thenNoContent() throws Exception {
+        super.patchUser(2).andExpect(
+                status().isNoContent()
+        );
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN", username = "admin", password = "admin")
+    public void givenAdmin_whenPatchCurrentUser_thenNoContent() throws Exception {
+        super.patchUser(1).andExpect(
+                status().isNoContent()
         );
     }
 

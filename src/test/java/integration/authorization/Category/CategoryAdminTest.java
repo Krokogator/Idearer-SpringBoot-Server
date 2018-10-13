@@ -1,67 +1,45 @@
 package integration.authorization.Category;
 
-import com.krokogator.spring.resources.category.Category;
-import integration.authorization.IntegrationTest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
-public class CategoryAdminTest extends IntegrationTest {
-
-    private final String endpoint = "/categories";
-
-    // ADMIN
+public class CategoryAdminTest extends CategoryAuthorizationTest {
 
     @Test
     @WithMockUser(roles = "ADMIN")
     public void givenAdmin_whenGetCategories_thenOk() throws Exception {
-        mockMvc.perform(
-                get(endpoint)
-        )
-                .andExpect(status().isOk());
+        getAllCategories().andExpect(
+                status().isOk()
+        );
     }
 
     @Test
     @WithMockUser(roles = "ADMIN")
     public void givenAdmin_whenPostCategory_thenCreated() throws Exception {
-        Category category = new Category();
-        category.setName("PostCategory");
-
-        mockMvc.perform(
-                post(endpoint)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(asJsonString(category))
-        )
-                .andExpect(status().isCreated());
+        createCategory().andExpect(
+                status().isCreated()
+        );
 
     }
 
     @Test
     @WithMockUser(roles = "ADMIN")
-    public void givenAdmin_whenUpdateCategory_thenOk() throws Exception {
-        Category category = new Category();
-        category.setName("Updated Category");
-
-        mockMvc.perform(
-                patch(endpoint + "/3")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(asJsonString(category))
-        )
-                .andExpect(status().isOk());
+    public void givenAdmin_whenUpdateCategory_thenNoContent() throws Exception {
+        updateCategory().andExpect(
+                status().isNoContent()
+        );
     }
 
     @Test
     @WithMockUser(roles = "ADMIN")
-    public void givenAdmin_whenDeleteCategory_thenOk() throws Exception {
-        mockMvc.perform(
-                delete(endpoint + "/4")
-        )
-                .andExpect(status().isOk());
+    public void givenAdmin_whenDeleteCategory_thenNoContent() throws Exception {
+        deleteCategory().andExpect(
+                status().isNoContent()
+        );
     }
 }
