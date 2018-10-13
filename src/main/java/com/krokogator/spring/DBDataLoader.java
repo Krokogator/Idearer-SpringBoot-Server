@@ -57,17 +57,10 @@ public class DBDataLoader implements ApplicationRunner {
             user2.setRole("USER");
             userRepository.save(user2);
 
-            User user3 = new User();
-            user3.setUsername("other");
-            user3.setPassword(PASSWORD_ENCODER.encode("other"));
-            user3.setEmail("other@gmail.com");
-            user3.setRole("USER");
-            userRepository.save(user3);
-
             //Food id:1 Games id:2
             categoryRepository.save((new Category("Food")));
             categoryRepository.save((new Category("Games")));
-            categoryRepository.save((new Category("Other")));
+            categoryRepository.save((new Category("Ideas")));
             categoryRepository.save((new Category("Technology")));
 
             //Ramen
@@ -79,10 +72,6 @@ public class DBDataLoader implements ApplicationRunner {
             articleRepository.save(new Article("Doomfist proplays", "2pNCQdGvaKU", new User(2L), new Category(2L)));
             commentRepository.save(new Comment("Wowowowow", new Article(2L), null, new User(2L)));
             commentRepository.save(new Comment("What a player!!", new Article(2L), null, new User(1L)));
-
-            //OtherArticle
-            articleRepository.save(new Article("Doomfist proplays", "2pNCQdGvaKU", new User(3L), new Category(3L)));
-            commentRepository.save(new Comment("Wowowowow", new Article(3L), null, new User(3L)));
         }
     }
 
