@@ -29,9 +29,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 )
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-//Rollback transactions! :>
+//Rollback transactions after each test
 @Transactional
-public abstract class AuthorizationTests {
+public abstract class IntegrationTest {
 
     @Autowired
     public MockMvc mockMvc;
@@ -45,11 +45,6 @@ public abstract class AuthorizationTests {
                 .apply(springSecurity())
                 .alwaysDo(print())
                 .build();
-    }
-
-    @BeforeClass
-    public static void initDatabase(){
-
     }
 
     public static String asJsonString(final Object obj) {

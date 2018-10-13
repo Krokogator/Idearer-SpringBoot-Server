@@ -1,11 +1,10 @@
 package integration.authorization.Category;
 
 import com.krokogator.spring.resources.category.Category;
-import integration.authorization.AuthorizationTests;
+import integration.authorization.IntegrationTest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -13,7 +12,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
-public class CategoryAdminTest extends AuthorizationTests {
+public class CategoryAdminTest extends IntegrationTest {
 
     private final String endpoint = "/categories";
 
