@@ -1,6 +1,7 @@
 package com.krokogator.spring.resources.user;
 
 import com.krokogator.spring.config.jwt.IdAwareOAuth2Request;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -10,6 +11,12 @@ import org.springframework.stereotype.Component;
 @Component("CurrentUser")
 public class CurrentUser {
 
+    private static UserService userService;
+
+    @Autowired
+    public CurrentUser(UserService userService) {
+        CurrentUser.userService = userService;
+    }
 
     public static Long getId(){
         try{
@@ -20,6 +27,11 @@ public class CurrentUser {
             SecureUser user = (SecureUser) getAuthentication().getPrincipal();
             return user.getId();
         } catch (ClassCastException e){}
+        try{
+            return userService.loadUserByUsername(getAuthentication().getName()).getId();
+        } catch (Exception e){
+            System.out.println();
+        }
         return 0L;
     }
 

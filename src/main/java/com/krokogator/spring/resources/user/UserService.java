@@ -57,7 +57,7 @@ public class UserService implements UserDetailsService {
 
     public GetUserDTO getUser(Long id) throws ClientErrorException {
         Optional<User> user = userRepository.findById(id);
-        return user.orElseThrow(() -> new ClientErrorException(HttpStatus.NOT_FOUND, "User not found"));
+        return user.orElseThrow(() -> new ClientErrorException(HttpStatus.NOT_FOUND, "User '"+id+"' not found."));
     }
 
     @PreAuthorize("hasRole('ADMIN') OR @CurrentUser.getId() == #id AND #dto.role == NULL")
