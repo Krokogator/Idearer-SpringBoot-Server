@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -47,9 +49,11 @@ public class ArticleService {
         return article;
     }
 
-    public void deleteArticle(Long id) throws ClientErrorException {
+    @PostAuthorize("returnObject.user.id == @CurrentUser.id OR hasRole('ADMIN')")
+    public Article deleteArticle(Long id) throws ClientErrorException {
         Article article = getArticle(id);
         articleRepository.delete(article);
+        return article;
     }
 
     public Article likeArticle(Article article) {
@@ -91,6 +95,7 @@ public class ArticleService {
         else return articleRepository.findAllByUserIdAndCategoryNameIgnoreCaseOrderByCreatedDesc(authorId, categoryName, pageable).getContent();
     }
 
+    @PostAuthorize("returnObject.user.id == @CurrentUser.id OR hasRole('ADMIN')")
     public Article updateArticle(PatchArticleDTO dto, Long articleId) throws ClientErrorException {
         //Check if article exists
         Article article = articleRepository.findById(articleId)
@@ -106,6 +111,11 @@ public class ArticleService {
             article = (dto.liked)? likeArticle(article) : dislikeArticle(article);
         }
 
+        return updateArticle(article);
+    }
+
+    @PreAuthorize("#article.user.id == @CurrentUser.id OR hasRole('ADMIN')")
+    private Article updateArticle(Article article) {
         return articleRepository.save(article);
     }
 }

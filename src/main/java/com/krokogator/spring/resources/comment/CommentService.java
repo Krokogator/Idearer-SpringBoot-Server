@@ -9,12 +9,10 @@ import com.krokogator.spring.resources.user.CurrentUser;
 import com.krokogator.spring.resources.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 import java.util.function.Predicate;
 
 @Service
@@ -70,17 +68,15 @@ public class CommentService {
         return commentRepository.save(comment);
     }
 
-
-    public void deleteComment(Long id) throws ClientErrorException {
-        if(commentRepository.existsById(id)) {
-            commentRepository.deleteById(id);
-        } else {
-            throw new ClientErrorException(HttpStatus.NOT_FOUND, "Comment '"+id+"' not found.");
-        }
+    @PostAuthorize("returnObject.user.id == @CurrentUser.id OR hasRole('ADMIN')")
+    public Comment deleteComment(Long id) throws ClientErrorException {
+        Comment comment = commentRepository.findById(id).orElseThrow(() -> new ClientErrorException(HttpStatus.NOT_FOUND, "Comment '" + id + "' not found."));
+        commentRepository.delete(comment);
+        return comment;
     }
 
-
-    public void updateComment(Long id, PatchCommentDTO dto) throws ClientErrorException {
+    @PostAuthorize("returnObject.user.id == @CurrentUser.id OR hasRole('ADMIN')")
+    public Comment updateComment(Long id, PatchCommentDTO dto) throws ClientErrorException {
         //Check if comment exists
         Comment comment = commentRepository.findById(id).orElseThrow(() -> new ClientErrorException(HttpStatus.NOT_FOUND, "Comment '"+id+"' not found."));
         //Update content if provided
@@ -91,6 +87,6 @@ public class CommentService {
             else comment = dislikeComment(comment);
         }
 
-        commentRepository.save(comment);
+        return commentRepository.save(comment);
     }
 }

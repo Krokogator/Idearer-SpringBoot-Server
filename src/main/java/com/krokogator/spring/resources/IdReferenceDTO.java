@@ -8,6 +8,9 @@ public class IdReferenceDTO {
     @NotNull
     private Long id;
 
+    public IdReferenceDTO() {
+    }
+
     public IdReferenceDTO(Long id){
         this.id = id;
     }

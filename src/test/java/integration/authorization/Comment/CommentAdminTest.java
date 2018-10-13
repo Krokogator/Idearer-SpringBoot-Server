@@ -11,7 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class CommentAdminTest extends CommentAuthorizationTest{
 
     @Test
-    @WithMockUser(roles = "USER", username = "admin", password = "admin")
+    @WithMockUser(roles = "ADMIN", username = "admin", password = "admin")
     public void givenAdmin_getCommentsByArticleId_thenOk() throws Exception {
         getCommentsByArticleId().andExpect(
                 status().isOk()
@@ -19,7 +19,7 @@ public class CommentAdminTest extends CommentAuthorizationTest{
     }
 
     @Test
-    @WithMockUser(roles = "USER", username = "admin", password = "admin")
+    @WithMockUser(roles = "ADMIN", username = "admin", password = "admin")
     public void givenAdmin_createComment_thenCreated() throws Exception {
         createComment().andExpect(
                 status().isCreated()
@@ -27,7 +27,7 @@ public class CommentAdminTest extends CommentAuthorizationTest{
     }
 
     @Test
-    @WithMockUser(roles = "USER", username = "admin", password = "admin")
+    @WithMockUser(roles = "ADMIN", username = "admin", password = "admin")
     public void givenAdmin_updateOwnedComment_thenNoContent() throws Exception {
         updateComment(1).andExpect(
                 status().isNoContent()
@@ -35,7 +35,7 @@ public class CommentAdminTest extends CommentAuthorizationTest{
     }
 
     @Test
-    @WithMockUser(roles = "USER", username = "admin", password = "admin")
+    @WithMockUser(roles = "ADMIN", username = "admin", password = "admin")
     public void givenAdmin_updateNotOwnedComment_thenNoContent() throws Exception {
         updateComment(2).andExpect(
                 status().isNoContent()
@@ -43,7 +43,7 @@ public class CommentAdminTest extends CommentAuthorizationTest{
     }
 
     @Test
-    @WithMockUser(roles = "USER", username = "admin", password = "admin")
+    @WithMockUser(roles = "ADMIN", username = "admin", password = "admin")
     public void givenAdmin_deleteOwnedComment_thenNoContent() throws Exception {
         deleteComment(1).andExpect(
                 status().isNoContent()
@@ -51,7 +51,7 @@ public class CommentAdminTest extends CommentAuthorizationTest{
     }
 
     @Test
-    @WithMockUser(roles = "USER", username = "admin", password = "admin")
+    @WithMockUser(roles = "ADMIN", username = "admin", password = "admin")
     public void givenAdmin_deleteNotOwnedComment_thenNoContent() throws Exception {
         deleteComment(2).andExpect(
                 status().isNoContent()

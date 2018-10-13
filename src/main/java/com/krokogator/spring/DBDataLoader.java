@@ -61,7 +61,7 @@ public class DBDataLoader implements ApplicationRunner {
             user3.setUsername("other");
             user3.setPassword(PASSWORD_ENCODER.encode("other"));
             user3.setEmail("other@gmail.com");
-            user3.setRole("OTHERUSER");
+            user3.setRole("USER");
             userRepository.save(user3);
 
             //Food id:1 Games id:2

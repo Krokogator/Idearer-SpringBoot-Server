@@ -14,6 +14,6 @@ import org.junit.runners.Suite;
         ArticleAuthorizationTest.class,
         CommentAuthorizationTest.class
 })
-public class AuthorizationTest {
+public abstract class AuthorizationTest {
 
 }

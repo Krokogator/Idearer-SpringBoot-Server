@@ -19,11 +19,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 })
 public abstract class CommentAuthorizationTest extends IntegrationTest {
 
-    private final String endpoint = "/categories";
+    private final String endpoint = "/comments";
 
     public ResultActions getCommentsByArticleId() throws Exception {
         return mockMvc.perform(
-                get(endpoint));
+                get(endpoint).param("articleId", "1"));
     }
 
     public ResultActions createComment() throws Exception {

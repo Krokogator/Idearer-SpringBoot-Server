@@ -40,7 +40,8 @@ public class CommentController {
     }
 
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasRole('USER')")
     @ApiResponses(value = {
             @ApiResponse(code = 401, message = "Unauthorized"),
             @ApiResponse(code = 404, message = "Not found")
@@ -51,6 +52,7 @@ public class CommentController {
 
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasRole('USER')")
     @ApiResponses(value = {
             @ApiResponse(code = 400, message = "Bad Request"),
             @ApiResponse(code = 401, message = "Unauthorized"),
