@@ -3,7 +3,6 @@ package integration.authorization;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.krokogator.spring.MyNotesServerApp;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 @ActiveProfiles("test")
 //Rollback transactions after each test
 @Transactional
-public abstract class IntegrationTest {
+public class IntegrationTest {
 
     @Autowired
     public MockMvc mockMvc;

@@ -23,7 +23,7 @@ public class ArticleAuthorizationTest extends IntegrationTest {
 
     public ResultActions getArticle() throws Exception {
         return mockMvc.perform(
-                get(endpoint + "/3"));
+                get(endpoint + "/1"));
     }
 
     public ResultActions getAllArticles() throws Exception {
