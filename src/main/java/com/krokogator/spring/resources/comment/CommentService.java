@@ -5,6 +5,7 @@ import com.krokogator.spring.resources.article.Article;
 import com.krokogator.spring.resources.article.ArticleRepository;
 import com.krokogator.spring.resources.comment.dto.PatchCommentDTO;
 import com.krokogator.spring.resources.comment.dto.PostCommentDTO;
+import com.krokogator.spring.resources.comment.projection.CommentWithoutChildrenProjection;
 import com.krokogator.spring.resources.user.CurrentUser;
 import com.krokogator.spring.resources.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -46,23 +48,21 @@ public class CommentService {
         if (articleId == null && userId == null) return null;
         //Get comments with subcomments
         if (userId == null) return commentRepository.getCommentsByArticleIdAndParentCommentId(articleId, null);
-        if (articleId == null) return commentRepository.findAllByUserId(userId).stream().map(x -> {
-            Comment comment = new Comment(x.getId());
-            comment.setUser(x.getUser());
-            comment.setContent(x.getContent());
-            comment.setCreated(x.getCreated());
-            comment.setLikesCount(x.getLikesCount());
-            return comment;
-        }).collect(Collectors.toList());
+        if (articleId == null) return commentRepository.findAllByUserId(userId).stream()
+                .map(this::getCommentWithoutSubComments).collect(Collectors.toList());
 
-        return commentRepository.findAllByUserIdAndAndArticleId(userId, articleId).stream().map(x -> {
-            Comment comment = new Comment(x.getId());
-            comment.setUser(x.getUser());
-            comment.setContent(x.getContent());
-            comment.setCreated(x.getCreated());
-            comment.setLikesCount(x.getLikesCount());
-            return comment;
-        }).collect(Collectors.toList());
+        return commentRepository.findAllByUserIdAndAndArticleId(userId, articleId).stream()
+                .map(this::getCommentWithoutSubComments).collect(Collectors.toList());
+    }
+
+    private Comment getCommentWithoutSubComments(CommentWithoutChildrenProjection x) {
+        Comment comment = new Comment(x.getId());
+        comment.setUser(x.getUser());
+        comment.setContent(x.getContent());
+        comment.setCreated(x.getCreated());
+        comment.setLikesCount(x.getLikesCount());
+        comment.setComments(new ArrayList<>());
+        return comment;
     }
 
 
