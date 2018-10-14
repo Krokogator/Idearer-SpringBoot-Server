@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 @Service
 public class CommentService {
@@ -40,9 +41,30 @@ public class CommentService {
         return commentRepository.save(comment);
     }
 
-    public List<Comment> getCommentsByArticleId(Long id) {
-        return commentRepository.getCommentsByArticleIdAndParentCommentId(id, null);
+    public List<Comment> getComments(Long articleId, Long userId) {
+
+        if (articleId == null && userId == null) return null;
+        //Get comments with subcomments
+        if (userId == null) return commentRepository.getCommentsByArticleIdAndParentCommentId(articleId, null);
+        if (articleId == null) return commentRepository.findAllByUserId(userId).stream().map(x -> {
+            Comment comment = new Comment(x.getId());
+            comment.setUser(x.getUser());
+            comment.setContent(x.getContent());
+            comment.setCreated(x.getCreated());
+            comment.setLikesCount(x.getLikesCount());
+            return comment;
+        }).collect(Collectors.toList());
+
+        return commentRepository.findAllByUserIdAndAndArticleId(userId, articleId).stream().map(x -> {
+            Comment comment = new Comment(x.getId());
+            comment.setUser(x.getUser());
+            comment.setContent(x.getContent());
+            comment.setCreated(x.getCreated());
+            comment.setLikesCount(x.getLikesCount());
+            return comment;
+        }).collect(Collectors.toList());
     }
+
 
     public Comment likeComment(Comment comment) {
         Predicate<User> matcher = p -> p.getId().equals(CurrentUser.getId());

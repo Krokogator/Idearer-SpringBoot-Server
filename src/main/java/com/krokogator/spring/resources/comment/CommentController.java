@@ -35,8 +35,11 @@ public class CommentController {
     }
 
     @GetMapping
-    public List<Comment> getCommentsByArticleId(@RequestParam Long articleId){
-        return commentService.getCommentsByArticleId(articleId);
+    public List<Comment> getComments(
+            @RequestParam(required = false) Long articleId,
+            @RequestParam(required = false) Long userId
+    ) {
+        return commentService.getComments(articleId, userId);
     }
 
     @DeleteMapping("/{id}")

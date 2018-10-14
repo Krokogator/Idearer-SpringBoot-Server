@@ -2,6 +2,7 @@ package com.krokogator.spring.resources.comment;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.krokogator.spring.resources.article.Article;
+import com.krokogator.spring.resources.comment.projection.CommentWithoutChildrenProjection;
 import com.krokogator.spring.resources.user.CurrentUser;
 import com.krokogator.spring.resources.user.User;
 import io.swagger.annotations.ApiModelProperty;
@@ -11,7 +12,7 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-public class Comment {
+public class Comment implements CommentWithoutChildrenProjection {
 
     @ApiModelProperty(readOnly = true)
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -141,5 +142,9 @@ public class Comment {
     }
     public User getUser() {
         return user;
+    }
+
+    public void setLikesCount(int likesCount) {
+        this.likesCount = likesCount;
     }
 }
