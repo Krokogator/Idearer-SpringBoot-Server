@@ -12,11 +12,13 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.Min;
 import java.util.List;
 
 @RestController
 @Api(tags = "Comments")
 @RequestMapping(value = "/comments")
+@Validated
 public class CommentController {
 
     @Autowired
@@ -36,10 +38,13 @@ public class CommentController {
 
     @GetMapping
     public List<Comment> getComments(
-            @RequestParam(required = false) Long articleId,
-            @RequestParam(required = false) Long userId
+            @RequestParam(required = false) @Min(0) Long articleId,
+            @RequestParam(required = false) @Min(0) Long userId,
+            @RequestParam(required = false) @Min(0) Long parentCommentId,
+            @RequestParam(required = false) @Min(1) Integer pageIndex,
+            @RequestParam(required = false) @Min(0) Integer pageSize
     ) {
-        return commentService.getComments(articleId, userId);
+        return commentService.getComments(articleId, userId, parentCommentId, pageIndex, pageSize);
     }
 
     @DeleteMapping("/{id}")

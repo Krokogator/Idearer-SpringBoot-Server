@@ -1,9 +1,12 @@
 package com.krokogator.spring.error.client;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+
+import javax.validation.ConstraintViolationException;
 
 @ControllerAdvice
 public class ClientErrorControllerAdvice {
@@ -18,5 +21,14 @@ public class ClientErrorControllerAdvice {
         clientErrorResponseBody.setMessage(exception.getMessage());
 
         return new ResponseEntity<>(clientErrorResponseBody, exception.getStatus());
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ClientErrorResponseBody> throwResponseExceptions(ConstraintViolationException exception) {
+        clientErrorResponseBody.setStatus(400);
+        clientErrorResponseBody.setError(exception.getConstraintViolations().toString());
+        clientErrorResponseBody.setMessage(exception.getMessage());
+
+        return new ResponseEntity<>(clientErrorResponseBody, HttpStatus.valueOf(clientErrorResponseBody.getStatus()));
     }
 }

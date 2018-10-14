@@ -7,7 +7,7 @@ import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
 
-public interface CommentRepository extends CrudRepository<Comment, Long> {
+public interface CommentRepository extends CrudRepository<Comment, Long>, CommentCustomRepository {
     Comment getById(Long id);
 
     List<Comment> getCommentsByArticleIdAndParentCommentId(Long articleId, Long parentCommentId);
@@ -18,3 +18,4 @@ public interface CommentRepository extends CrudRepository<Comment, Long> {
 
     List<CommentWithoutChildrenProjection> findAllByUserIdAndAndArticleId(Long userId, Long articleId);
 }
+

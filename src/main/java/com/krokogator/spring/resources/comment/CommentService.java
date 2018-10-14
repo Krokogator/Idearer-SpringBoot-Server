@@ -9,6 +9,7 @@ import com.krokogator.spring.resources.comment.projection.CommentWithoutChildren
 import com.krokogator.spring.resources.user.CurrentUser;
 import com.krokogator.spring.resources.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.stereotype.Service;
@@ -16,7 +17,8 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
+
+import static org.springframework.data.domain.PageRequest.of;
 
 @Service
 public class CommentService {
@@ -43,16 +45,23 @@ public class CommentService {
         return commentRepository.save(comment);
     }
 
-    public List<Comment> getComments(Long articleId, Long userId) {
+    public List<Comment> getComments(Long articleId, Long userId, Long parentCommentId, Integer pageIndex, Integer pageSize) {
 
-        if (articleId == null && userId == null) return null;
-        //Get comments with subcomments
-        if (userId == null) return commentRepository.getCommentsByArticleIdAndParentCommentId(articleId, null);
-        if (articleId == null) return commentRepository.findAllByUserId(userId).stream()
-                .map(this::getCommentWithoutSubComments).collect(Collectors.toList());
 
-        return commentRepository.findAllByUserIdAndAndArticleId(userId, articleId).stream()
-                .map(this::getCommentWithoutSubComments).collect(Collectors.toList());
+//        if (articleId == null && userId == null) return null;
+//        //Get comments with subcomments
+//        if (userId == null) return commentRepository.getCommentsByArticleIdAndParentCommentId(articleId, null);
+//        if (articleId == null) return commentRepository.findAllByUserId(userId).stream()
+//                .map(this::getCommentWithoutSubComments).collect(Collectors.toList());
+        pageIndex = (pageIndex == null) ? 1 : pageIndex;
+        pageSize = (pageSize == null) ? 1000 : pageSize;
+        Pageable page = of(pageIndex, pageSize);
+
+        return commentRepository.getCommentsByAdvancedQuery(userId, articleId, parentCommentId, page);
+
+
+//        return commentRepository.findAllByUserIdAndAndArticleId(userId, articleId).stream()
+//                .map(this::getCommentWithoutSubComments).collect(Collectors.toList());
     }
 
     private Comment getCommentWithoutSubComments(CommentWithoutChildrenProjection x) {
