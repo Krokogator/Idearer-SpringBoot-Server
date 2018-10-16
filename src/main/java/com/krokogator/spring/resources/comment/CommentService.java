@@ -45,7 +45,7 @@ public class CommentService {
         return commentRepository.save(comment);
     }
 
-    public List<Comment> getComments(Long articleId, Long userId, Long parentCommentId, Integer pageIndex, Integer pageSize) {
+    public List<Comment> getComments(Long articleId, Long userId, Long parentCommentId, Integer pageIndex, Integer pageSize, Boolean hideSubcomments) {
 
 
 //        if (articleId == null && userId == null) return null;
@@ -55,11 +55,16 @@ public class CommentService {
 //                .map(this::getCommentWithoutSubComments).collect(Collectors.toList());
         pageIndex = (pageIndex == null) ? 1 : pageIndex;
         pageSize = (pageSize == null) ? 1000 : pageSize;
+        hideSubcomments = (hideSubcomments == null) ? false : hideSubcomments;
         Pageable page = of(pageIndex, pageSize);
 
-        return commentRepository.getCommentsByAdvancedQuery(userId, articleId, parentCommentId, page);
-
-
+        List<Comment> comments = commentRepository.getCommentsByAdvancedQuery(userId, articleId, parentCommentId, page);
+        if (hideSubcomments) {
+            for (Comment c : comments) {
+                c.setComments(null);
+            }
+        }
+        return comments;
 //        return commentRepository.findAllByUserIdAndAndArticleId(userId, articleId).stream()
 //                .map(this::getCommentWithoutSubComments).collect(Collectors.toList());
     }

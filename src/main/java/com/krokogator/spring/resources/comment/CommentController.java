@@ -41,10 +41,11 @@ public class CommentController {
             @RequestParam(required = false) @Min(0) Long articleId,
             @RequestParam(required = false) @Min(0) Long userId,
             @RequestParam(required = false) @Min(0) Long parentCommentId,
-            @RequestParam(required = false) @Min(1) Integer pageIndex,
-            @RequestParam(required = false) @Min(0) Integer pageSize
+            @RequestParam(required = false, defaultValue = "1") @Min(1) Integer pageIndex,
+            @RequestParam(required = false) @Min(0) Integer pageSize,
+            @RequestParam(required = false) Boolean hideSubcomments
     ) {
-        return commentService.getComments(articleId, userId, parentCommentId, pageIndex, pageSize);
+        return commentService.getComments(articleId, userId, parentCommentId, pageIndex, pageSize, hideSubcomments);
     }
 
     @DeleteMapping("/{id}")

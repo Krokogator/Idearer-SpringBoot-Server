@@ -24,13 +24,6 @@ public class CommentCustomRepositoryImpl implements CommentCustomRepository {
 
     @Override
     public List<Comment> getCommentsByAdvancedQuery(Long userId, Long articleId, Long parentCommentId, Pageable page) {
-//        Query query = entityManager.createQuery("SELECT c FROM Comment c WHERE " +
-//                ":userId is null or c.user.id = :userId " +
-//                "AND :articleId is null or c.article.id = :articleId", Comment.class);
-//
-//        query.setParameter("userId", userId);
-//        query.setParameter("articleId", articleId);
-//        return query.getResultList();
 
         List<Predicate> predicates = new ArrayList<>();
 
@@ -53,7 +46,8 @@ public class CommentCustomRepositoryImpl implements CommentCustomRepository {
                 predicates.add(cb.equal(root.join("parentComment").get("id"), parentCommentId));
             }
         }
-        query.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
+
+        query.where(cb.and(predicates.toArray(new Predicate[predicates.size()]))).orderBy(cb.asc(root.get("created")));
 
         TypedQuery<Comment> typedQuery = entityManager.createQuery(query);
         typedQuery.setFirstResult(page.getPageNumber() * page.getPageSize() - page.getPageSize());
