@@ -2,18 +2,13 @@ package integration.authorization.User;
 
 import com.krokogator.spring.resources.user.dto.PatchUserDTO;
 import com.krokogator.spring.resources.user.dto.PostUserDTO;
-import integration.authorization.IntegrationTest;
-import org.junit.Test;
+import integration.IntegrationTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.test.web.servlet.ResultActions;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({

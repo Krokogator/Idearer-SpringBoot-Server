@@ -1,17 +1,10 @@
 package integration.authorization.User;
 
-import com.krokogator.spring.resources.user.dto.PatchUserDTO;
-import com.krokogator.spring.resources.user.dto.PostUserDTO;
-import integration.authorization.IntegrationTest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.servlet.annotation.WebInitParam;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
