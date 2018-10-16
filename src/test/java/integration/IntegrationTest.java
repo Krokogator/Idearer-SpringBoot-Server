@@ -1,7 +1,8 @@
-package integration.authorization;
+package integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.krokogator.spring.MyNotesServerApp;
+import integration.authorization.AuthorizationTest;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;

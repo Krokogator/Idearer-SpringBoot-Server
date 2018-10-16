@@ -3,7 +3,7 @@ package integration.authorization.Article;
 import com.krokogator.spring.resources.IdReferenceDTO;
 import com.krokogator.spring.resources.article.dto.PatchArticleDTO;
 import com.krokogator.spring.resources.article.dto.PostArticleDTO;
-import integration.authorization.IntegrationTest;
+import integration.IntegrationTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.springframework.http.MediaType;

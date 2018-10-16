@@ -1,7 +1,7 @@
 package integration.authorization.Category;
 
 import com.krokogator.spring.resources.category.Category;
-import integration.authorization.IntegrationTest;
+import integration.IntegrationTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.springframework.http.MediaType;

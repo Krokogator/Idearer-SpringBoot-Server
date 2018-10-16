@@ -3,7 +3,7 @@ package integration.authorization.Comment;
 import com.krokogator.spring.resources.IdReferenceDTO;
 import com.krokogator.spring.resources.comment.dto.PatchCommentDTO;
 import com.krokogator.spring.resources.comment.dto.PostCommentDTO;
-import integration.authorization.IntegrationTest;
+import integration.IntegrationTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.springframework.http.MediaType;
