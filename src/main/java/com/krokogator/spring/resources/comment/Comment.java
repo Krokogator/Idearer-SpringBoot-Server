@@ -8,6 +8,7 @@ import com.krokogator.spring.resources.user.User;
 import io.swagger.annotations.ApiModelProperty;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -45,6 +46,7 @@ public class Comment implements CommentWithoutChildrenProjection {
         this.created = new Date();
         this.liked = false;
         this.likesCount = 0;
+        this.comments = new ArrayList<>();
     }
 
     public Comment(Long id) {
