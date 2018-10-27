@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -80,24 +81,22 @@ public class CommentService {
     }
 
 
-    public Comment likeComment(Comment comment) {
+    public Comment likeComment(Comment comment) throws ClientErrorException {
         Predicate<User> matcher = p -> p.getId().equals(CurrentUser.getId());
 
         if(comment.getLikes().stream().anyMatch(matcher)) {
-            //Comment already liked by this user, do nothing.
-            return comment;
+            throw new ClientErrorException(HttpStatus.CONFLICT, "Comment " + comment.getId() + " already liked.");
         }
 
         comment.getLikes().add(new User(CurrentUser.getId()));
         return commentRepository.save(comment);
     }
 
-    public Comment dislikeComment(Comment comment) {
+    public Comment dislikeComment(Comment comment) throws ClientErrorException {
         Predicate<User> matcher = p -> p.getId().equals(CurrentUser.getId());
 
         if(comment.getLikes().stream().noneMatch(matcher)){
-            //Comment already disliked by this user, do nothing.
-            return comment;
+            throw new ClientErrorException(HttpStatus.CONFLICT, "Comment " + comment.getId() + " already disliked.");
         }
 
         comment.getLikes().removeIf(x -> x.getId().equals(CurrentUser.getId()));
@@ -112,17 +111,25 @@ public class CommentService {
     }
 
     @PostAuthorize("returnObject.user.id == @CurrentUser.id OR hasRole('ADMIN')")
-    public Comment updateComment(Long id, PatchCommentDTO dto) throws ClientErrorException {
+    public Comment updateComment(PatchCommentDTO dto, Long id) throws ClientErrorException {
         //Check if comment exists
         Comment comment = commentRepository.findById(id).orElseThrow(() -> new ClientErrorException(HttpStatus.NOT_FOUND, "Comment '"+id+"' not found."));
         //Update content if provided
         if(dto.content != null) comment.setContent(dto.content);
-        //Like or dislike if provided
-        if(dto.liked != null) {
-            if (dto.liked) comment = likeComment(comment);
-            else comment = dislikeComment(comment);
-        }
 
         return commentRepository.save(comment);
+    }
+
+    @PreAuthorize("hasRole('USER')")
+    public void likeOrDislikeComment(PatchCommentDTO dto, Long id) throws ClientErrorException {
+        //Check if comment exists
+        Comment comment = commentRepository.findById(id).orElseThrow(() -> new ClientErrorException(HttpStatus.NOT_FOUND, "Comment '" + id + "' not found."));
+
+        //Like or dislike if provided
+        if (dto.liked != null) {
+            comment = (dto.liked) ? likeComment(comment) : dislikeComment(comment);
+        }
+
+        commentRepository.save(comment);
     }
 }

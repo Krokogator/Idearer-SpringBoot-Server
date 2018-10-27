@@ -9,6 +9,7 @@ import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -59,6 +60,7 @@ public class CommentController {
         commentService.deleteComment(id);
     }
 
+    @Transactional
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasRole('USER')")
@@ -67,8 +69,14 @@ public class CommentController {
             @ApiResponse(code = 401, message = "Unauthorized"),
             @ApiResponse(code = 404, message = "Not found")
     })
-    public void updateComment(@PathVariable Long id, @RequestBody @Validated PatchCommentDTO dto) throws ClientErrorException {
-        commentService.updateComment(id, dto);
+    public void updateComment(@PathVariable Long id, @RequestBody @Validated PatchCommentDTO commentDTO) throws ClientErrorException {
+        if (!commentDTO.isEmpty()) {
+            commentService.updateComment(commentDTO, id);
+        }
+
+        if (commentDTO.liked != null) {
+            commentService.likeOrDislikeComment(commentDTO, id);
+        }
     }
 
 }

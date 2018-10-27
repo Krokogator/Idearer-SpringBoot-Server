@@ -25,7 +25,7 @@ public class Comment implements CommentWithoutChildrenProjection {
     private Date created;
 
     @JsonIgnore
-    @OneToMany
+    @ManyToMany
     private List<User> likes;
 
     @ApiModelProperty(readOnly = true)

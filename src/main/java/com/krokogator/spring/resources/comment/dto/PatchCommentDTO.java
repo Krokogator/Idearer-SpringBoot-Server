@@ -9,4 +9,8 @@ public class PatchCommentDTO {
 
     public Boolean liked;
 
+    public Boolean isEmpty() {
+        return content == null;
+    }
+
 }
