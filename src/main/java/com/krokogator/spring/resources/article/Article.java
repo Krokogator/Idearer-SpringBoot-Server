@@ -25,7 +25,7 @@ public class Article {
     private Date created;
 
     @JsonIgnore
-    @OneToMany
+    @ManyToMany
     private List<User> likes;
 
     @ApiModelProperty(readOnly = true)

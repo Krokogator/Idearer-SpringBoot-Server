@@ -56,24 +56,22 @@ public class ArticleService {
         return article;
     }
 
-    public Article likeArticle(Article article) {
+    public Article likeArticle(Article article) throws ClientErrorException {
         Predicate<User> matcher = p -> p.getId().equals(CurrentUser.getId());
 
         if(article.getLikes().stream().anyMatch(matcher)) {
-            //Article already liked by this user, do nothing.
-            return article;
+            throw new ClientErrorException(HttpStatus.CONFLICT, "Article " + article.getId() + " already liked.");
         }
 
         article.getLikes().add(new User(CurrentUser.getId()));
-        return articleRepository.save(article);
+        return article;
     }
 
-    public Article dislikeArticle(Article article) {
+    public Article dislikeArticle(Article article) throws ClientErrorException {
         Predicate<User> matcher = p -> p.getId().equals(CurrentUser.getId());
 
         if(article.getLikes().stream().noneMatch(matcher)){
-            //Article already disliked by this user, do nothing.
-            return article;
+            throw new ClientErrorException(HttpStatus.CONFLICT, "Article " + article.getId() + " already disliked.");
         }
 
         article.getLikes().removeIf(x -> x.getId().equals(CurrentUser.getId()));
@@ -106,15 +104,28 @@ public class ArticleService {
         if(dto.content != null) article.setContent(dto.content);
         //Update category if provided
         if(dto.getCategory() != null) article.setCategory(new Category(dto.getCategory().getId()));
+//        //Update liked if provided
+//        if(dto.liked != null) {
+//            article = (dto.liked)? likeArticle(article) : dislikeArticle(article);
+//        }
+
+        return updateArticle(article);
+    }
+
+    @PreAuthorize("hasRole('USER')")
+    public Article likeOrDislikeArticle(PatchArticleDTO dto, Long articleId) throws ClientErrorException {
+        //Check if article exists
+        Article article = articleRepository.findById(articleId)
+                .orElseThrow(() -> new ClientErrorException(HttpStatus.NOT_FOUND, "Article '" + articleId + "' not found."));
+
         //Update liked if provided
-        if(dto.liked != null) {
-            article = (dto.liked)? likeArticle(article) : dislikeArticle(article);
+        if (dto.liked != null) {
+            article = (dto.liked) ? likeArticle(article) : dislikeArticle(article);
         }
 
         return updateArticle(article);
     }
 
-    @PreAuthorize("#article.user.id == @CurrentUser.id OR hasRole('ADMIN')")
     private Article updateArticle(Article article) {
         return articleRepository.save(article);
     }

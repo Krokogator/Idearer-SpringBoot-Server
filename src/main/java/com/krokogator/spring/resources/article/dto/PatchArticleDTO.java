@@ -25,6 +25,12 @@ public class PatchArticleDTO {
     public void setCategory(IdReferenceDTO category) {
         this.category = category;
     }
+
+    public Boolean isEmpty() {
+        if (title != null) return false;
+        if (content != null) return false;
+        return category == null;
+    }
 }
 
 

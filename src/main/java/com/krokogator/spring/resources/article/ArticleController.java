@@ -70,8 +70,14 @@ public class ArticleController {
             @ApiResponse(code = 403, message = "Forbidden"),
             @ApiResponse(code = 404, message = "Not Found")
     })
-    public Article updateArticle(@RequestBody @Validated PatchArticleDTO articleDTO, @PathVariable Long id) throws ClientErrorException {
-        return articleService.updateArticle(articleDTO, id);
+    public void updateArticle(@RequestBody @Validated PatchArticleDTO articleDTO, @PathVariable Long id) throws ClientErrorException {
+        if (articleDTO.liked != null) {
+            articleService.likeOrDislikeArticle(articleDTO, id);
+        }
+
+        if (!articleDTO.isEmpty()) {
+            articleService.updateArticle(articleDTO, id);
+        }
     }
 
 }
