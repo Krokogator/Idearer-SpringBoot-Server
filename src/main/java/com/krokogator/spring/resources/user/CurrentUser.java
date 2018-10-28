@@ -30,7 +30,7 @@ public class CurrentUser {
         try{
             return userService.loadUserByUsername(getAuthentication().getName()).getId();
         } catch (Exception e){
-            System.out.println();
+            //System.out.println();
         }
         return 0L;
     }
