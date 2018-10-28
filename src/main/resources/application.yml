@@ -18,7 +18,7 @@ spring:
     hibernate:
       ddl-auto: none
     #Logging sql commands
-    show-sql: true
+    show-sql: false
 
     properties:
       hibernate:
