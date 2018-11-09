@@ -46,7 +46,7 @@ public class CommentService {
         return commentRepository.save(comment);
     }
 
-    public List<Comment> getComments(Long articleId, Long userId, Long parentCommentId, Integer pageIndex, Integer pageSize, Boolean hideSubcomments) {
+    public List<Comment> getComments(Long articleId, Long userId, Long parentCommentId, Integer pageIndex, Integer pageSize, Boolean hideSubcomments, CommentSort sort) {
 
 
 //        if (articleId == null && userId == null) return null;
@@ -59,7 +59,7 @@ public class CommentService {
         hideSubcomments = (hideSubcomments == null) ? false : hideSubcomments;
         Pageable page = of(pageIndex, pageSize);
 
-        List<Comment> comments = commentRepository.getCommentsByAdvancedQuery(userId, articleId, parentCommentId, page);
+        List<Comment> comments = commentRepository.getCommentsByAdvancedQuery(userId, articleId, parentCommentId, page, sort);
         if (hideSubcomments) {
             for (Comment c : comments) {
                 c.setComments(null);

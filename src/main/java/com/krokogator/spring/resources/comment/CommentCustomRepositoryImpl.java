@@ -23,7 +23,7 @@ public class CommentCustomRepositoryImpl implements CommentCustomRepository {
     EntityManager entityManager;
 
     @Override
-    public List<Comment> getCommentsByAdvancedQuery(Long userId, Long articleId, Long parentCommentId, Pageable page) {
+    public List<Comment> getCommentsByAdvancedQuery(Long userId, Long articleId, Long parentCommentId, Pageable page, CommentSort sort) {
 
         List<Predicate> predicates = new ArrayList<>();
 
@@ -47,8 +47,19 @@ public class CommentCustomRepositoryImpl implements CommentCustomRepository {
             }
         }
 
-        query.where(cb.and(predicates.toArray(new Predicate[predicates.size()]))).orderBy(cb.asc(root.get("created")));
-
+        if (sort == CommentSort.ASCENDING_CREATED) {
+            query.where(cb.and(predicates.toArray(new Predicate[predicates.size()])))
+                    .orderBy(cb.asc(root.get("created")));
+        } else if (sort == CommentSort.DESCENDING_CREATED) {
+            query.where(cb.and(predicates.toArray(new Predicate[predicates.size()])))
+                    .orderBy(cb.desc(root.get("created")));
+        } else if (sort == CommentSort.DESCENDING_LIKES) {
+            query.where(cb.and(predicates.toArray(new Predicate[predicates.size()])))
+                    .orderBy(cb.desc(cb.size(root.get(Comment_.likes))));
+        } else {
+            query.where(cb.and(predicates.toArray(new Predicate[predicates.size()])))
+                    .orderBy(cb.asc(root.get("created")));
+        }
         TypedQuery<Comment> typedQuery = entityManager.createQuery(query);
         typedQuery.setFirstResult(page.getPageNumber() * page.getPageSize() - page.getPageSize());
         typedQuery.setMaxResults(page.getPageSize());

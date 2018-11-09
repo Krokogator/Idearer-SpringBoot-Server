@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface CommentCustomRepository {
 
-    List<Comment> getCommentsByAdvancedQuery(Long userId, Long articleId, Long parentCommentId, Pageable page);
+    List<Comment> getCommentsByAdvancedQuery(Long userId, Long articleId, Long parentCommentId, Pageable page, CommentSort sort);
 }
