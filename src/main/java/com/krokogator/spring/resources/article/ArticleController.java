@@ -57,9 +57,9 @@ public class ArticleController {
             @RequestParam(required = false) String categoryName,
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer pageSize,
-            @RequestParam(required = false, name = "UNIMPLEMENTED sort") String sort,
-            @RequestParam(required = false, name = "UNIMPLEMENTED verified") Boolean verified){
-        return articleService.getArticles(authorId, categoryName, page, pageSize);
+            @RequestParam(required = false) ArticleSort sort,
+            @RequestParam(required = false, name = "UNIMPLEMENTED status") String status) {
+        return articleService.getArticles(authorId, categoryName, page, pageSize, sort);
     }
 
     @Transactional
