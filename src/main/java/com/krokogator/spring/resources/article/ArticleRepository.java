@@ -9,16 +9,10 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.List;
 
 
-public interface ArticleRepository extends CrudRepository<Article, Long>, JpaSpecificationExecutor<Category> {
+public interface ArticleRepository extends CrudRepository<Article, Long>, JpaSpecificationExecutor<Category>, ArticleCustomRepository {
     Article getById(Long id);
 
     Page<Article> findAll(Pageable pageable);
 
     List<Article> findAll();
-
-    /** FIND by (author AND category) OR (author) OR (category) OR findAll*/
-    Page<Article> findAllByOrderByCreatedDesc(Pageable pageable);
-    Page<Article> findAllByCategoryNameIgnoreCaseOrderByCreatedDesc(String categoryId, Pageable pageable);
-    Page<Article> findAllByUserIdOrderByCreatedDesc(Long userId, Pageable pageable);
-    Page<Article> findAllByUserIdAndCategoryNameIgnoreCaseOrderByCreatedDesc(Long userId, String categoryId, Pageable pageable);
 }

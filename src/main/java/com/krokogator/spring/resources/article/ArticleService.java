@@ -78,19 +78,16 @@ public class ArticleService {
         return articleRepository.save(article);
     }
 
-    public List<Article> getArticles(Long authorId, String categoryName, Integer page, Integer pageSize){
+    public List<Article> getArticles(Long userId, String categoryName, Integer pageIndex, Integer pageSize, ArticleSort sort) {
         //Default page/page size values if null
-        page = (page == null) ? 0 : page;
+        pageIndex = (pageIndex == null) ? 1 : pageIndex;
         pageSize = (pageSize == null) ? 1000 : pageSize;
 
         //Page request instance
-        Pageable pageable = PageRequest.of(page, pageSize);
+        Pageable page = PageRequest.of(pageIndex, pageSize);
 
-        //findAllBy not null parameters
-        if(authorId == null && categoryName == null) return articleRepository.findAllByOrderByCreatedDesc(pageable).getContent();
-        else if (categoryName == null) return articleRepository.findAllByUserIdOrderByCreatedDesc(authorId, pageable).getContent();
-        else if (authorId == null) return articleRepository.findAllByCategoryNameIgnoreCaseOrderByCreatedDesc(categoryName, pageable).getContent();
-        else return articleRepository.findAllByUserIdAndCategoryNameIgnoreCaseOrderByCreatedDesc(authorId, categoryName, pageable).getContent();
+        return articleRepository.getArticlesByAdvancedQuery(userId, categoryName, page, sort);
+
     }
 
     @PostAuthorize("returnObject.user.id == @CurrentUser.id OR hasRole('ADMIN')")
