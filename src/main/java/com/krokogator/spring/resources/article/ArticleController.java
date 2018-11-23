@@ -1,19 +1,19 @@
 package com.krokogator.spring.resources.article;
 
 import com.krokogator.spring.error.client.ClientErrorException;
+import com.krokogator.spring.resources.article.dto.PageArticleDTO;
 import com.krokogator.spring.resources.article.dto.PatchArticleDTO;
 import com.krokogator.spring.resources.article.dto.PostArticleDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @Api(tags = "Articles")
@@ -52,14 +52,22 @@ public class ArticleController {
     }
 
     @GetMapping
-    public List<Article> getArticles(
+    public PageArticleDTO getArticles(
             @RequestParam(required = false) Long authorId,
             @RequestParam(required = false) String categoryName,
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer pageSize,
             @RequestParam(required = false) ArticleSort sort,
             @RequestParam(required = false, name = "UNIMPLEMENTED status") String status) {
-        return articleService.getArticles(authorId, categoryName, page, pageSize, sort);
+        Page result = articleService.getArticles(authorId, categoryName, page, pageSize, sort);
+        PageArticleDTO dto = new PageArticleDTO();
+        dto.content = result.getContent();
+        dto.page = result.getPageable().getPageNumber();
+        dto.pageSize = result.getPageable().getPageSize();
+        dto.lastPage = result.getTotalPages() - 1;
+
+        return dto;
+
     }
 
     @Transactional

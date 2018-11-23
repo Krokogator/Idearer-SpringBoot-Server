@@ -1,5 +1,7 @@
 package com.krokogator.spring.resources.article;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +24,7 @@ public class ArticleCustomRepositoryImpl implements ArticleCustomRepository {
     EntityManager em;
 
     @Override
-    public List<Article> getArticlesByAdvancedQuery(Long userId, String categoryName, Pageable page, ArticleSort sort) {
+    public Page<Article> getArticlesByAdvancedQuery(Long userId, String categoryName, Pageable page, ArticleSort sort) {
 
         List<Predicate> predicates = new ArrayList<>();
 
@@ -41,6 +43,7 @@ public class ArticleCustomRepositoryImpl implements ArticleCustomRepository {
         }
 
         query.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
+
 
         // Sorting type
         if (sort == null) sort = ArticleSort.DESCENDING_CREATED;
@@ -64,12 +67,17 @@ public class ArticleCustomRepositoryImpl implements ArticleCustomRepository {
                 query.orderBy(cb.desc(root.get(Article_.title)));
         }
 
+        //Counting
+
+        CriteriaQuery<Long> countQuery = cb.createQuery(Long.class);
+        countQuery.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
+        countQuery.select(cb.count(countQuery.from(Article.class)));
+
         //Paging
-
         TypedQuery<Article> typedQuery = em.createQuery(query);
-        typedQuery.setFirstResult(page.getPageNumber() * page.getPageSize() - page.getPageSize());
+        typedQuery.setFirstResult(page.getPageNumber() * page.getPageSize());
         typedQuery.setMaxResults(page.getPageSize());
-
-        return typedQuery.getResultList();
+        Page result = new PageImpl(typedQuery.getResultList(), page, em.createQuery(countQuery).getSingleResult());
+        return result;
     }
 }

@@ -8,6 +8,7 @@ import com.krokogator.spring.resources.category.CategoryRepository;
 import com.krokogator.spring.resources.user.CurrentUser;
 import com.krokogator.spring.resources.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -15,7 +16,6 @@ import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.function.Predicate;
 
 
@@ -78,15 +78,17 @@ public class ArticleService {
         return articleRepository.save(article);
     }
 
-    public List<Article> getArticles(Long userId, String categoryName, Integer pageIndex, Integer pageSize, ArticleSort sort) {
+    public Page<Article> getArticles(Long userId, String categoryName, Integer pageIndex, Integer pageSize, ArticleSort sort) {
         //Default page/page size values if null
         pageIndex = (pageIndex == null) ? 1 : pageIndex;
+        pageIndex--;
         pageSize = (pageSize == null) ? 1000 : pageSize;
 
         //Page request instance
         Pageable page = PageRequest.of(pageIndex, pageSize);
 
         return articleRepository.getArticlesByAdvancedQuery(userId, categoryName, page, sort);
+        //return articleRepository.findAll(page);
 
     }
 
