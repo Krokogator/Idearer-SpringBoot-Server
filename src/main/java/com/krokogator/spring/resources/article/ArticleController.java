@@ -62,9 +62,9 @@ public class ArticleController {
         Page result = articleService.getArticles(authorId, categoryName, page, pageSize, sort);
         PageArticleDTO dto = new PageArticleDTO();
         dto.content = result.getContent();
-        dto.page = result.getPageable().getPageNumber();
+        dto.page = result.getPageable().getPageNumber() + 1;
         dto.pageSize = result.getPageable().getPageSize();
-        dto.lastPage = result.getTotalPages() - 1;
+        dto.lastPage = result.getTotalPages();
 
         return dto;
 
