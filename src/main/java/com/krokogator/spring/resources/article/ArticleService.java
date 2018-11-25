@@ -128,4 +128,18 @@ public class ArticleService {
     private Article updateArticle(Article article) {
         return articleRepository.save(article);
     }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    public Article updateStatus(ArticleStatus status, Long articleId) throws ClientErrorException {
+        //Check if article exists
+        Article article = articleRepository.findById(articleId)
+                .orElseThrow(() -> new ClientErrorException(HttpStatus.NOT_FOUND, "Article '" + articleId + "' not found."));
+
+        //Update status if provided
+        if (status != null) {
+            article.setStatus(status);
+        }
+
+        return updateArticle(article);
+    }
 }

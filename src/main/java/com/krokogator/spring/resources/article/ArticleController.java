@@ -81,13 +81,10 @@ public class ArticleController {
             @ApiResponse(code = 404, message = "Not Found")
     })
     public void updateArticle(@RequestBody @Validated PatchArticleDTO articleDTO, @PathVariable Long id) throws ClientErrorException {
-        if (!articleDTO.isEmpty()) {
-            articleService.updateArticle(articleDTO, id);
-        }
-        
-        if (articleDTO.liked != null) {
-            articleService.likeOrDislikeArticle(articleDTO, id);
-        }
+        if (!articleDTO.isEmpty()) articleService.updateArticle(articleDTO, id);
+        if (articleDTO.liked != null) articleService.likeOrDislikeArticle(articleDTO, id);
+        if (articleDTO.status != null) articleService.updateStatus(articleDTO.status, id);
+
 
     }
 

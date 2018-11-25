@@ -1,6 +1,7 @@
 package com.krokogator.spring.resources.article.dto;
 
 import com.krokogator.spring.resources.IdReferenceDTO;
+import com.krokogator.spring.resources.article.ArticleStatus;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Size;
@@ -14,6 +15,8 @@ public class PatchArticleDTO {
     public String content;
 
     public Boolean liked;
+
+    public ArticleStatus status;
 
     @Valid
     private IdReferenceDTO category;
