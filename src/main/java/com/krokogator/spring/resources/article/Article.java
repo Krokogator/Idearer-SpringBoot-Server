@@ -44,23 +44,19 @@ public class Article {
     @Transient
     private int commentsCount;
 
-    @PostLoad
-    private void Load(){
-        likesCount = likes.size();
-        liked = likes.stream().anyMatch(x -> x.getId().equals(CurrentUser.getId()));
-        commentsCount = comments.size();
-    }
-
     @ManyToOne
     private User user;
 
     @ManyToOne
     private Category category;
 
+    private ArticleStatus status;
+
     public Article(){
         this.likesCount = 0;
         this.liked = false;
         this.created = new Date();
+        this.status = ArticleStatus.PENDING;
     }
 
     public Article(String title, String content, User user, Category category){
@@ -69,6 +65,13 @@ public class Article {
         this.content = content;
         this.user = user;
         this.category = category;
+    }
+
+    @PostLoad
+    private void Load() {
+        likesCount = likes.size();
+        liked = likes.stream().anyMatch(x -> x.getId().equals(CurrentUser.getId()));
+        commentsCount = comments.size();
     }
 
     public Article(Long id) {
@@ -141,5 +144,13 @@ public class Article {
 
     public void setComments(List<Comment> comments) {
         this.comments = comments;
+    }
+
+    public ArticleStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(ArticleStatus status) {
+        this.status = status;
     }
 }

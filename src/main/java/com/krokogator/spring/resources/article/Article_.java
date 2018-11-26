@@ -12,4 +12,5 @@ public class Article_ {
     public static volatile SingularAttribute<Article, Long> id;
     public static volatile SingularAttribute<Article, String> title;
     public static volatile ListAttribute<Article, List<User>> likes;
+    public static volatile SingularAttribute<Article, ArticleStatus> status;
 }

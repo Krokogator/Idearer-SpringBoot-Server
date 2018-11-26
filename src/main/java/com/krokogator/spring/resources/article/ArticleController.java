@@ -58,8 +58,8 @@ public class ArticleController {
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer pageSize,
             @RequestParam(required = false) ArticleSort sort,
-            @RequestParam(required = false, name = "UNIMPLEMENTED status") String status) {
-        Page result = articleService.getArticles(authorId, categoryName, page, pageSize, sort);
+            @RequestParam(required = false, defaultValue = "ACCEPTED") ArticleStatus status) {
+        Page result = articleService.getArticles(authorId, categoryName, status, page, pageSize, sort);
         PageArticleDTO dto = new PageArticleDTO();
         dto.content = result.getContent();
         dto.page = result.getPageable().getPageNumber() + 1;
@@ -81,13 +81,10 @@ public class ArticleController {
             @ApiResponse(code = 404, message = "Not Found")
     })
     public void updateArticle(@RequestBody @Validated PatchArticleDTO articleDTO, @PathVariable Long id) throws ClientErrorException {
-        if (!articleDTO.isEmpty()) {
-            articleService.updateArticle(articleDTO, id);
-        }
-        
-        if (articleDTO.liked != null) {
-            articleService.likeOrDislikeArticle(articleDTO, id);
-        }
+        if (!articleDTO.isEmpty()) articleService.updateArticle(articleDTO, id);
+        if (articleDTO.liked != null) articleService.likeOrDislikeArticle(articleDTO, id);
+        if (articleDTO.status != null) articleService.updateStatus(articleDTO.status, id);
+
 
     }
 

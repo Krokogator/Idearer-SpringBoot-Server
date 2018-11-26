@@ -5,5 +5,5 @@ import org.springframework.data.domain.Pageable;
 
 public interface ArticleCustomRepository {
 
-    Page<Article> getArticlesByAdvancedQuery(Long userId, String categoryName, Pageable page, ArticleSort sort);
+    Page<Article> getArticlesByAdvancedQuery(Long userId, String categoryName, ArticleStatus status, Pageable page, ArticleSort sort);
 }
