@@ -58,8 +58,8 @@ public class ArticleController {
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer pageSize,
             @RequestParam(required = false) ArticleSort sort,
-            @RequestParam(required = false, name = "UNIMPLEMENTED status") String status) {
-        Page result = articleService.getArticles(authorId, categoryName, page, pageSize, sort);
+            @RequestParam(required = false, defaultValue = "ACCEPTED") ArticleStatus status) {
+        Page result = articleService.getArticles(authorId, categoryName, status, page, pageSize, sort);
         PageArticleDTO dto = new PageArticleDTO();
         dto.content = result.getContent();
         dto.page = result.getPageable().getPageNumber() + 1;

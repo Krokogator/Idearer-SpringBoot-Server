@@ -24,7 +24,7 @@ public class ArticleCustomRepositoryImpl implements ArticleCustomRepository {
     EntityManager em;
 
     @Override
-    public Page<Article> getArticlesByAdvancedQuery(Long userId, String categoryName, Pageable page, ArticleSort sort) {
+    public Page<Article> getArticlesByAdvancedQuery(Long userId, String categoryName, ArticleStatus status, Pageable page, ArticleSort sort) {
 
         List<Predicate> predicates = new ArrayList<>();
 
@@ -40,6 +40,10 @@ public class ArticleCustomRepositoryImpl implements ArticleCustomRepository {
 
         if (categoryName != null) {
             predicates.add(cb.equal(root.join("category").get("name"), categoryName));
+        }
+
+        if (status != null) {
+            predicates.add(cb.equal(root.get(Article_.status), status));
         }
 
         query.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));

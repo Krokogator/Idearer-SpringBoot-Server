@@ -78,7 +78,7 @@ public class ArticleService {
         return articleRepository.save(article);
     }
 
-    public Page<Article> getArticles(Long userId, String categoryName, Integer pageIndex, Integer pageSize, ArticleSort sort) {
+    public Page<Article> getArticles(Long userId, String categoryName, ArticleStatus status, Integer pageIndex, Integer pageSize, ArticleSort sort) {
         //Default page/page size values if null
         pageIndex = (pageIndex == null) ? 1 : pageIndex;
         pageIndex--;
@@ -87,7 +87,7 @@ public class ArticleService {
         //Page request instance
         Pageable page = PageRequest.of(pageIndex, pageSize);
 
-        return articleRepository.getArticlesByAdvancedQuery(userId, categoryName, page, sort);
+        return articleRepository.getArticlesByAdvancedQuery(userId, categoryName, status, page, sort);
         //return articleRepository.findAll(page);
 
     }
