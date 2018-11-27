@@ -62,7 +62,7 @@ public class CommentService {
         List<Comment> comments = commentRepository.getCommentsByAdvancedQuery(userId, articleId, parentCommentId, page, sort);
         if (hideSubcomments) {
             for (Comment c : comments) {
-                c.setComments(null);
+                c.setComments(new ArrayList<>());
             }
         }
         return comments;
