@@ -29,6 +29,7 @@ public class ArticleCustomRepositoryImpl implements ArticleCustomRepository {
         List<Predicate> predicates = new ArrayList<>();
 
         CriteriaBuilder cb = em.getCriteriaBuilder();
+
         CriteriaQuery<Article> query = cb.createQuery(Article.class);
         Root<Article> root = query.from(Article.class);
 
@@ -46,7 +47,7 @@ public class ArticleCustomRepositoryImpl implements ArticleCustomRepository {
             predicates.add(cb.equal(root.get(Article_.status), status));
         }
 
-        query.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
+        query.where(cb.and(predicates.toArray(new Predicate[]{})));
 
 
         // Sorting type
@@ -71,17 +72,36 @@ public class ArticleCustomRepositoryImpl implements ArticleCustomRepository {
                 query.orderBy(cb.desc(root.get(Article_.title)));
         }
 
-        //Counting
-
-        CriteriaQuery<Long> countQuery = cb.createQuery(Long.class);
-        countQuery.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
-        countQuery.select(cb.count(countQuery.from(Article.class)));
-
         //Paging
         TypedQuery<Article> typedQuery = em.createQuery(query);
         typedQuery.setFirstResult(page.getPageNumber() * page.getPageSize());
         typedQuery.setMaxResults(page.getPageSize());
-        Page result = new PageImpl(typedQuery.getResultList(), page, em.createQuery(countQuery).getSingleResult());
+
+        Page result = new PageImpl(typedQuery.getResultList(), page, countByCriteriaQuery(cb, query, userId, categoryName, status));
+
         return result;
+    }
+
+    private Long countByCriteriaQuery(CriteriaBuilder cb, CriteriaQuery cqEntity, Long userId, String categoryName, ArticleStatus status) {
+
+        CriteriaQuery<Long> cqCount = cb.createQuery(Long.class);
+        Root<Article> root = cqCount.from(cqEntity.getResultType());
+        cqCount.select(cb.count(root));
+
+        List<Predicate> predicates = new ArrayList<>();
+        if (userId != null) {
+            predicates.add(cb.equal(root.join("user").get("id"), userId));
+        }
+
+        if (categoryName != null) {
+            predicates.add(cb.equal(root.join("category").get("name"), categoryName));
+        }
+
+        if (status != null) {
+            predicates.add(cb.equal(root.get(Article_.status), status));
+        }
+
+        cqCount.where(cb.and(predicates.toArray(new Predicate[]{})));
+        return em.createQuery(cqCount).getSingleResult();
     }
 }
