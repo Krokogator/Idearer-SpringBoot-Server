@@ -79,6 +79,10 @@ public class Comment implements CommentWithoutChildrenProjection {
     @ManyToOne
     private Article article;
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public long getId() {
         return id;
     }
