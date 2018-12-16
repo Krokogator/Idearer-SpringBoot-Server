@@ -39,7 +39,7 @@ public class ArticleUserAuthorizationTest extends ArticleAuthorizationTest {
     @Test
     @WithMockUser(roles = "USER", username = "user", password = "user")
     public void givenUser_whenPatchOwnedArticle_thenNoContent() throws Exception {
-        patchArticle(2).andExpect(
+        patchArticleTitle(2).andExpect(
                 status().isNoContent()
         );
     }
@@ -47,7 +47,7 @@ public class ArticleUserAuthorizationTest extends ArticleAuthorizationTest {
     @Test
     @WithMockUser(roles = "USER", username = "user", password = "user")
     public void givenUser_whenPatchNotOwnedArticle_thenForbidden() throws Exception {
-        patchArticle(1).andExpect(
+        patchArticleTitle(1).andExpect(
                 status().isForbidden()
         );
     }
@@ -67,4 +67,21 @@ public class ArticleUserAuthorizationTest extends ArticleAuthorizationTest {
                 status().isForbidden()
         );
     }
+
+    @Test
+    @WithMockUser(roles = "USER", username = "user", password = "user")
+    public void givenUser_whenPatchNotOwnedArticleStatusToACCEPTED_thenForbidden() throws Exception {
+        patchArticleStatusToACCEPTED(1).andExpect(
+                status().isForbidden()
+        );
+    }
+
+    @Test
+    @WithMockUser(roles = "USER", username = "user", password = "user")
+    public void givenUser_whenPatchOwnedArticleStatusToACCEPTED_thenForbidden() throws Exception {
+        patchArticleStatusToACCEPTED(2).andExpect(
+                status().isForbidden()
+        );
+    }
+    
 }

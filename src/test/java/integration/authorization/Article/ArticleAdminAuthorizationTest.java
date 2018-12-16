@@ -37,7 +37,7 @@ public class ArticleAdminAuthorizationTest extends ArticleAuthorizationTest {
     @Test
     @WithMockUser(roles = "ADMIN", username = "admin", password = "admin")
     public void givenAdmin_whenPatchOwnedArticle_thenNoContent() throws Exception {
-        patchArticle(1).andExpect(
+        patchArticleTitle(1).andExpect(
                 status().isNoContent()
         );
     }
@@ -45,7 +45,7 @@ public class ArticleAdminAuthorizationTest extends ArticleAuthorizationTest {
     @Test
     @WithMockUser(roles = "ADMIN", username = "admin", password = "admin")
     public void givenAdmin_whenPatchNotOwnedArticle_thenNoContent() throws Exception {
-        patchArticle(2).andExpect(
+        patchArticleTitle(2).andExpect(
                 status().isNoContent()
         );
     }
@@ -62,6 +62,22 @@ public class ArticleAdminAuthorizationTest extends ArticleAuthorizationTest {
     @WithMockUser(roles = "ADMIN", username = "admin", password = "admin")
     public void givenAdmin_whenDeleteNotOwnedArticle_thenNoContent() throws Exception {
         deleteArticle(2).andExpect(
+                status().isNoContent()
+        );
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN", username = "admin", password = "admin")
+    public void givenAdmin_whenPatchOwnedArticleStatusToACCEPTED_thenNoContent() throws Exception {
+        patchArticleStatusToACCEPTED(1).andExpect(
+                status().isNoContent()
+        );
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN", username = "admin", password = "admin")
+    public void givenAdmin_whenPatchNotOwnedArticleStatusToACCEPTED_thenNoContent() throws Exception {
+        patchArticleStatusToACCEPTED(2).andExpect(
                 status().isNoContent()
         );
     }
