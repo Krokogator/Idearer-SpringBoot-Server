@@ -15,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+
 @RestController
 @Api(tags = "Articles")
 @RequestMapping(value = "/articles")
@@ -80,10 +82,10 @@ public class ArticleController {
             @ApiResponse(code = 403, message = "Forbidden"),
             @ApiResponse(code = 404, message = "Not Found")
     })
-    public void updateArticle(@RequestBody @Validated PatchArticleDTO articleDTO, @PathVariable Long id) throws ClientErrorException {
+    public void updateArticle(@RequestBody @Validated PatchArticleDTO articleDTO, @PathVariable Long id, HttpServletRequest request) throws ClientErrorException {
         if (!articleDTO.isEmpty()) articleService.updateArticle(articleDTO, id);
         if (articleDTO.liked != null) articleService.likeOrDislikeArticle(articleDTO, id);
-        if (articleDTO.status != null) articleService.updateStatus(articleDTO.status, id);
+        if (articleDTO.status != null) articleService.updateStatus(articleDTO.status, id, request);
 
 
     }

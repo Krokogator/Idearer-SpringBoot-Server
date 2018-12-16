@@ -16,6 +16,7 @@ import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.function.Predicate;
 
 
@@ -92,7 +93,7 @@ public class ArticleService {
 
     }
 
-    @PostAuthorize("returnObject.user.id == @CurrentUser.id OR hasRole('ADMIN')")
+    @PostAuthorize("( returnObject.user.id == @CurrentUser.id AND returnObject.status.toString() == 'REJECTED' ) OR hasRole('ADMIN')")
     public Article updateArticle(PatchArticleDTO dto, Long articleId) throws ClientErrorException {
         //Check if article exists
         Article article = articleRepository.findById(articleId)
@@ -129,11 +130,16 @@ public class ArticleService {
         return articleRepository.save(article);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    public Article updateStatus(ArticleStatus status, Long articleId) throws ClientErrorException {
+    @PostAuthorize("hasRole('ADMIN') OR returnObject.user.id == @CurrentUser.id")
+    public Article updateStatus(ArticleStatus status, Long articleId, HttpServletRequest request) throws ClientErrorException {
         //Check if article exists
         Article article = articleRepository.findById(articleId)
                 .orElseThrow(() -> new ClientErrorException(HttpStatus.NOT_FOUND, "Article '" + articleId + "' not found."));
+
+        //Check if user updates article status from REJECTED to PENDING (if not, throw FORBIDDEN 403)
+        if ((status != ArticleStatus.PENDING || article.getStatus() != ArticleStatus.REJECTED) && request.isUserInRole("USER")) {
+            throw new ClientErrorException(HttpStatus.FORBIDDEN, "User can only modify own articles status from " + ArticleStatus.REJECTED.toString() + "to " + ArticleStatus.PENDING.toString());
+        }
 
         //Update status if provided
         if (status != null) {

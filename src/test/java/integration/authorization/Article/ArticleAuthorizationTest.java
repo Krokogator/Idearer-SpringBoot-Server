@@ -1,6 +1,7 @@
 package integration.authorization.Article;
 
 import com.krokogator.spring.resources.IdReferenceDTO;
+import com.krokogator.spring.resources.article.ArticleStatus;
 import com.krokogator.spring.resources.article.dto.PatchArticleDTO;
 import com.krokogator.spring.resources.article.dto.PostArticleDTO;
 import integration.IntegrationTest;
@@ -43,13 +44,23 @@ public class ArticleAuthorizationTest extends IntegrationTest {
                         .content(asJsonString(postArticleDTO)));
     }
 
-    public ResultActions patchArticle(int id) throws Exception {
+    public ResultActions patchArticleTitle(int id) throws Exception {
         PatchArticleDTO patchArticleDTO = new PatchArticleDTO();
         patchArticleDTO.title = "Modified article title";
         return mockMvc.perform(
                 patch(endpoint + "/" +id)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(patchArticleDTO)));
+    }
+
+    public ResultActions patchArticleStatusToACCEPTED(int id) throws Exception {
+        PatchArticleDTO patchArticleDTO = new PatchArticleDTO();
+        patchArticleDTO.status = ArticleStatus.ACCEPTED;
+        return mockMvc.perform(
+                patch(endpoint + "/" + id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(patchArticleDTO))
+        );
     }
 
 

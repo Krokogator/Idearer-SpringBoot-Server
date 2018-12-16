@@ -36,8 +36,8 @@ public class ArticleAnonymousAuthorizationTest extends ArticleAuthorizationTest 
 
     @Test
     @WithAnonymousUser
-    public void givenAnonymous_whenPatchArticle_thenUnauthorized() throws Exception {
-        patchArticle(1).andExpect(
+    public void givenAnonymous_whenpatchArticleTitle_thenUnauthorized() throws Exception {
+        patchArticleTitle(1).andExpect(
                 status().isUnauthorized()
         );
     }
@@ -46,6 +46,14 @@ public class ArticleAnonymousAuthorizationTest extends ArticleAuthorizationTest 
     @WithAnonymousUser
     public void givenAnonymous_whenDeleteArticle_thenUnauthorized() throws Exception {
         deleteArticle(1).andExpect(
+                status().isUnauthorized()
+        );
+    }
+
+    @Test
+    @WithAnonymousUser
+    public void givenAnonymous_whenPatchArticleStatusToACCEPTED_thenUnauthorized() throws Exception {
+        patchArticleStatusToACCEPTED(1).andExpect(
                 status().isUnauthorized()
         );
     }
