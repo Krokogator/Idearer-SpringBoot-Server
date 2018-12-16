@@ -1,25 +1,24 @@
 package com.krokogator.spring.resources.report;
 
-import org.hibernate.validator.constraints.Length;
+import com.krokogator.spring.resources.user.User;
 
 import javax.persistence.*;
 
-/**
- * Try to apply this for general use
- */
-@Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "REPORT_TYPE")
-public abstract class Report {
+@MappedSuperclass
+public class Report {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Length(min = 10, max = 200)
     private String description;
 
+    @ManyToOne
+    private User reportAuthor;
+    private ReportStatus reportStatus;
+
     public Report() {
+        this.reportStatus = ReportStatus.PENDING;
     }
 
     public Long getId() {
@@ -36,5 +35,21 @@ public abstract class Report {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public User getReportAuthor() {
+        return reportAuthor;
+    }
+
+    public void setReportAuthor(User reportAuthor) {
+        this.reportAuthor = reportAuthor;
+    }
+
+    public ReportStatus getReportStatus() {
+        return reportStatus;
+    }
+
+    public void setReportStatus(ReportStatus reportStatus) {
+        this.reportStatus = reportStatus;
     }
 }
