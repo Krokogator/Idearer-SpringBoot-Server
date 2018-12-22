@@ -1,6 +1,7 @@
 # Idearer SpringBoot Server (status: development)
 
 Rest server created for Idearer website.
+https://idearer.herokuapp.com
 
 ## Used technologies
 
