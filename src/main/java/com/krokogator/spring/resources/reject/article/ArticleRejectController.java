@@ -8,9 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
-@PreAuthorize("hasRole('ADMIN')")
 @RestController
 @Api(tags = "Rejects")
 public class ArticleRejectController {
@@ -18,14 +18,16 @@ public class ArticleRejectController {
     @Autowired
     ArticleRejectService service;
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("articles/{articleId}/rejects")
     @ResponseStatus(HttpStatus.CREATED)
     public ArticleReject reject(@PathVariable Long articleId, @RequestBody PostArticleRejectDTO dto) throws ClientErrorException {
         return service.reject(articleId, dto);
     }
 
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("articles/{articleId}/rejects")
-    public List<ArticleReject> getByArticleId(@PathVariable Long articleId) {
-        return service.getByArticleId(articleId);
+    public List<ArticleReject> getByArticleId(@PathVariable Long articleId, HttpServletRequest request) throws ClientErrorException {
+        return service.getByArticleId(articleId, request);
     }
 }

@@ -38,8 +38,16 @@ public class ArticleUserAuthorizationTest extends ArticleAuthorizationTest {
 
     @Test
     @WithMockUser(roles = "USER", username = "user", password = "user")
-    public void givenUser_whenPatchOwnedArticle_thenNoContent() throws Exception {
+    public void givenUser_whenPatchOwnedArticleStatusOtherThanRejected_thenForbidden() throws Exception {
         patchArticleTitle(2).andExpect(
+                status().isForbidden()
+        );
+    }
+
+    @Test
+    @WithMockUser(roles = "USER", username = "user", password = "user")
+    public void givenUser_whenPatchOwnedArticleStatusRejected_thenNoContent() throws Exception {
+        patchArticleTitle(12).andExpect(
                 status().isNoContent()
         );
     }

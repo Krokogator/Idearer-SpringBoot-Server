@@ -7,6 +7,8 @@ import com.krokogator.spring.resources.category.Category;
 import com.krokogator.spring.resources.category.CategoryRepository;
 import com.krokogator.spring.resources.comment.Comment;
 import com.krokogator.spring.resources.comment.CommentRepository;
+import com.krokogator.spring.resources.reject.article.ArticleReject;
+import com.krokogator.spring.resources.reject.article.ArticleRejectRepository;
 import com.krokogator.spring.resources.report.article.ArticleReport;
 import com.krokogator.spring.resources.report.article.ArticleReportRepository;
 import com.krokogator.spring.resources.user.User;
@@ -19,8 +21,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import static com.krokogator.spring.resources.article.ArticleStatus.ACCEPTED;
-import static com.krokogator.spring.resources.article.ArticleStatus.PENDING;
+import static com.krokogator.spring.resources.article.ArticleStatus.*;
 
 @Component
 public class DBDataLoader implements ApplicationRunner {
@@ -35,6 +36,9 @@ public class DBDataLoader implements ApplicationRunner {
     private CommentRepository commentRepository;
     @Autowired
     private ArticleReportRepository articleReportRepository;
+
+    @Autowired
+    private ArticleRejectRepository articleRejectRepository;
 
     @Autowired
     private BCryptPasswordEncoder PASSWORD_ENCODER;
@@ -74,6 +78,8 @@ public class DBDataLoader implements ApplicationRunner {
             Article a9 = saveArticle("Decore your classes!", "GCraGHx6gso", user, c_technology, PENDING);
             Article a10 = saveArticle("I can make you any object!", "EcFVTgRHJLM", user, c_technology, PENDING);
             Article a11 = saveArticle("I can make you many objects at once!", "v-GiuMmsXj4", user, c_technology, PENDING);
+            //REJECTED
+            Article a12 = saveArticle("Funniest thing ever, lol!", "youtube.com", user, c_ideas, REJECTED);
 
             //Comments
             Comment c1a1 = saveComment("Looks amazing", a1, null, admin);
@@ -87,6 +93,9 @@ public class DBDataLoader implements ApplicationRunner {
             ArticleReport aReport3 = saveArticleReport("Bs video...", user, a1);
             ArticleReport aReport4 = saveArticleReport("Boring video...", user, a5);
             ArticleReport aReport5 = saveArticleReport("Violates user rights.", user, a3);
+
+            //Article Rejects
+            ArticleReject aReject = saveArticleReject("Rejected by Admin, invalid video", a12);
         }
     }
 
@@ -126,5 +135,12 @@ public class DBDataLoader implements ApplicationRunner {
 
     private ArticleReport saveArticleReport(String description, User user, Article article) {
         return articleReportRepository.save(new ArticleReport(description, user, article));
+    }
+
+    private ArticleReject saveArticleReject(String description, Article article) {
+        ArticleReject articleReject = new ArticleReject();
+        articleReject.setDescription(description);
+        articleReject.setArticle(article);
+        return articleRejectRepository.save(articleReject);
     }
 }

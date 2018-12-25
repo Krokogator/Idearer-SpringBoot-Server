@@ -9,16 +9,17 @@ import com.krokogator.spring.resources.reject.Reject;
 import com.krokogator.spring.resources.reject.RejectService;
 import com.krokogator.spring.resources.reject.article.dto.PostArticleRejectDTO;
 import com.krokogator.spring.resources.report.article.ArticleReportService;
+import com.krokogator.spring.resources.user.CurrentUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Service
-@PreAuthorize("hasRole('ADMIN')")
 public class ArticleRejectService extends RejectService<Reject> {
 
     @Autowired
@@ -34,6 +35,7 @@ public class ArticleRejectService extends RejectService<Reject> {
     ArticleReportService articleReportService;
 
     @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public ArticleReject reject(Long articleId, PostArticleRejectDTO dto) throws ClientErrorException {
         //Get article (also throws error if no article found)
         Article article = articleService.getArticle(articleId);
@@ -62,7 +64,10 @@ public class ArticleRejectService extends RejectService<Reject> {
         return articleReject;
     }
 
-    public List<ArticleReject> getByArticleId(Long articleId) {
+    public List<ArticleReject> getByArticleId(Long articleId, HttpServletRequest request) throws ClientErrorException {
+        if (articleService.getArticle(articleId).getUser().getId() != CurrentUser.getId() && !request.isUserInRole("ADMIN")) {
+            throw new ClientErrorException(HttpStatus.FORBIDDEN, "Cannot view other users rejects.");
+        }
         return articleRejectRepository.findAllByArticleId(articleId);
     }
 }
