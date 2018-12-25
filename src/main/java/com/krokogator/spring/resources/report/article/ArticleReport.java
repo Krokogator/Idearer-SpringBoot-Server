@@ -1,5 +1,6 @@
 package com.krokogator.spring.resources.report.article;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.krokogator.spring.resources.article.Article;
 import com.krokogator.spring.resources.report.Report;
 import com.krokogator.spring.resources.user.User;
@@ -11,6 +12,7 @@ import javax.persistence.ManyToOne;
 public class ArticleReport extends Report {
 
     @ManyToOne
+    @JsonIgnore
     private Article article;
 
     public ArticleReport() {
