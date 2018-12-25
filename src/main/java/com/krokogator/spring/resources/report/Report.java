@@ -9,13 +9,14 @@ public class Report {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    protected Long id;
 
-    private String description;
+    protected String description;
 
     @ManyToOne
-    private User reportAuthor;
-    private ReportStatus reportStatus;
+    protected User reportAuthor;
+
+    protected ReportStatus reportStatus;
 
     public Report() {
         this.reportStatus = ReportStatus.PENDING;
