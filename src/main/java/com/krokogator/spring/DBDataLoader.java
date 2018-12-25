@@ -2,10 +2,13 @@ package com.krokogator.spring;
 
 import com.krokogator.spring.resources.article.Article;
 import com.krokogator.spring.resources.article.ArticleRepository;
+import com.krokogator.spring.resources.article.ArticleStatus;
 import com.krokogator.spring.resources.category.Category;
 import com.krokogator.spring.resources.category.CategoryRepository;
 import com.krokogator.spring.resources.comment.Comment;
 import com.krokogator.spring.resources.comment.CommentRepository;
+import com.krokogator.spring.resources.report.article.ArticleReport;
+import com.krokogator.spring.resources.report.article.ArticleReportRepository;
 import com.krokogator.spring.resources.user.User;
 import com.krokogator.spring.resources.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +18,9 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.core.env.Environment;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
+
+import static com.krokogator.spring.resources.article.ArticleStatus.ACCEPTED;
+import static com.krokogator.spring.resources.article.ArticleStatus.PENDING;
 
 @Component
 public class DBDataLoader implements ApplicationRunner {
@@ -27,6 +33,8 @@ public class DBDataLoader implements ApplicationRunner {
     private ArticleRepository articleRepository;
     @Autowired
     private CommentRepository commentRepository;
+    @Autowired
+    private ArticleReportRepository articleReportRepository;
 
     @Autowired
     private BCryptPasswordEncoder PASSWORD_ENCODER;
@@ -42,36 +50,43 @@ public class DBDataLoader implements ApplicationRunner {
 
             /** DATA ONLY FOR DEVELOPMENT */
 
-            //Admin id:1  User id:2
-            User user1 = new User();
-            user1.setUsername("admin");
-            user1.setPassword(PASSWORD_ENCODER.encode("admin"));
-            user1.setEmail("admin@gmail.com");
-            user1.setRole("ADMIN");
-            userRepository.save(user1);
+            // Users
+            User admin = saveUser("admin", "admin", "admin@gmail.com", "ADMIN");
+            User user = saveUser("user", "user", "user@gmail.com", "USER");
 
-            User user2 = new User();
-            user2.setUsername("user");
-            user2.setPassword(PASSWORD_ENCODER.encode("user"));
-            user2.setEmail("user@gmail.com");
-            user2.setRole("USER");
-            userRepository.save(user2);
+            //Categories
+            Category c_food = saveCategory("Food");
+            Category c_games = saveCategory("Games");
+            Category c_ideas = saveCategory("Ideas");
+            Category c_technology = saveCategory("Technology");
 
-            //Food id:1 Games id:2
-            categoryRepository.save((new Category("Food")));
-            categoryRepository.save((new Category("Games")));
-            categoryRepository.save((new Category("Ideas")));
-            categoryRepository.save((new Category("Technology")));
+            //Articles
+            //ACCEPTED
+            Article a1 = saveArticle("Ramen", "B8y3SSmz4sg", admin, c_food, ACCEPTED);
+            Article a2 = saveArticle("Doomfist plays like a pro!", "2pNCQdGvaKU", user, c_games, ACCEPTED);
+            Article a3 = saveArticle("Tasty !", "K3EZwmoHVtc", user, c_food, ACCEPTED);
+            Article a4 = saveArticle("What a landing...", "VBlIvghQTlI", user, c_technology, ACCEPTED);
+            Article a5 = saveArticle("Structural patterns overview", "lPsSL6_7NBg", user, c_technology, ACCEPTED);
+            Article a6 = saveArticle("Command pattern!", "9qA5kw8dcSU", user, c_technology, ACCEPTED);
+            //PENDING
+            Article a7 = saveArticle("Strategy pattern", "v9ejT8FO-7I", admin, c_technology, PENDING);
+            Article a8 = saveArticle("Observer pattern", "_BpmfnqjgzQ", admin, c_technology, PENDING);
+            Article a9 = saveArticle("Decore your classes!", "GCraGHx6gso", user, c_technology, PENDING);
+            Article a10 = saveArticle("I can make you any object!", "EcFVTgRHJLM", user, c_technology, PENDING);
+            Article a11 = saveArticle("I can make you many objects at once!", "v-GiuMmsXj4", user, c_technology, PENDING);
 
-            //Ramen
-            articleRepository.save(new Article("Ramen", "B8y3SSmz4sg", new User(1L), new Category(1L)));
-            commentRepository.save(new Comment("Looks amazing!", new Article(1L), null, new User(1L)));
-            commentRepository.save(new Comment("I didn't like the last part :|", new Article(1L), new Comment(1L), new User(2L)));
+            //Comments
+            Comment c1a1 = saveComment("Looks amazing", a1, null, admin);
+            Comment c2c1a2 = saveComment("I didn't like the last part :|", a1, c1a1, user);
+            Comment c3a2 = saveComment("Wow, amazing!", a2, null, user);
+            Comment c4c3a2 = saveComment("What a player indeed!", a2, c3a2, admin);
 
-            //Overwatch
-            articleRepository.save(new Article("Doomfist proplays", "2pNCQdGvaKU", new User(2L), new Category(2L)));
-            commentRepository.save(new Comment("Wowowowow", new Article(2L), null, new User(2L)));
-            commentRepository.save(new Comment("What a player!!", new Article(2L), null, new User(1L)));
+            //Article Reports
+            ArticleReport aReport1 = saveArticleReport("This video contains violence!", user, a1);
+            ArticleReport aReport2 = saveArticleReport("Bad for children :<", user, a1);
+            ArticleReport aReport3 = saveArticleReport("Bs video...", user, a1);
+            ArticleReport aReport4 = saveArticleReport("Boring video...", user, a5);
+            ArticleReport aReport5 = saveArticleReport("Violates user rights.", user, a3);
         }
     }
 
@@ -84,5 +99,32 @@ public class DBDataLoader implements ApplicationRunner {
             default:
                 return false;
         }
+    }
+
+    private User saveUser(String name, String password, String email, String role) {
+        User user = new User();
+        user.setUsername(name);
+        user.setPassword(PASSWORD_ENCODER.encode(password));
+        user.setEmail(email);
+        user.setRole(role);
+        return userRepository.save(user);
+    }
+
+    private Category saveCategory(String name) {
+        return categoryRepository.save(new Category(name));
+    }
+
+    private Article saveArticle(String title, String content, User user, Category category, ArticleStatus status) {
+        Article article = new Article(title, content, user, category);
+        article.setStatus(status);
+        return articleRepository.save(article);
+    }
+
+    private Comment saveComment(String title, Article article, Comment parentComment, User user) {
+        return commentRepository.save(new Comment(title, article, parentComment, user));
+    }
+
+    private ArticleReport saveArticleReport(String description, User user, Article article) {
+        return articleReportRepository.save(new ArticleReport(description, user, article));
     }
 }

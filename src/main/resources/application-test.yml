@@ -3,6 +3,8 @@ spring:
     url: jdbc:postgresql://localhost:5432/postgres
     username: postgres
     password: sa
+    platform: postgresql
+    #initialization-mode: always
   h2:
     console:
       enabled: true

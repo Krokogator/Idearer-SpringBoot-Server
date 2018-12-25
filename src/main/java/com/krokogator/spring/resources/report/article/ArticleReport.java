@@ -1,20 +1,29 @@
 package com.krokogator.spring.resources.report.article;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.krokogator.spring.resources.article.Article;
 import com.krokogator.spring.resources.report.Report;
+import com.krokogator.spring.resources.user.User;
 
-import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
 @Entity
-@DiscriminatorValue(value = "ARTICLE")
 public class ArticleReport extends Report {
 
     @ManyToOne
+    @JsonIgnore
     private Article article;
 
     public ArticleReport() {
+        super();
+    }
+
+    public ArticleReport(String description, User reportAuthor, Article article) {
+        super();
+        this.description = description;
+        this.reportAuthor = reportAuthor;
+        this.article = article;
     }
 
     public Article getArticle() {
@@ -24,9 +33,4 @@ public class ArticleReport extends Report {
     public void setArticle(Article article) {
         this.article = article;
     }
-
-    public Long getArticleId() {
-        return article.getId();
-    }
-
 }

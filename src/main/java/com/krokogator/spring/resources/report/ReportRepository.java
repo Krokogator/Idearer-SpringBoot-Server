@@ -4,7 +4,6 @@ import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
 
-public interface ReportRepository extends CrudRepository<Report, Long> {
-
-    List<Report> findAll();
+public interface ReportRepository<T extends Report> extends CrudRepository<T, Long> {
+    List<T> findAll();
 }

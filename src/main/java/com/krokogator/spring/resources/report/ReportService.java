@@ -1,40 +1,37 @@
 package com.krokogator.spring.resources.report;
 
-import com.krokogator.spring.resources.article.Article;
-import com.krokogator.spring.resources.comment.Comment;
-import com.krokogator.spring.resources.report.article.ArticleReport;
-import com.krokogator.spring.resources.report.comment.CommentReport;
-import com.krokogator.spring.resources.report.dto.PostReportDTO;
+import com.krokogator.spring.resources.user.CurrentUser;
+import com.krokogator.spring.resources.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class ReportService {
+public class ReportService<T extends Report> {
 
     @Autowired
-    ReportRepository reportRepository;
+    ReportRepository<T> reportRepository;
 
-    private void addReport(Report report) {
-        reportRepository.save(report);
+    @PreAuthorize("hasRole('USER')")
+    public T save(T report) {
+        report.setReportAuthor(new User(CurrentUser.getId()));
+        return reportRepository.save(report);
     }
 
-    public void addArticleReport(PostReportDTO report, Long articleId) {
-        ArticleReport articleReport = new ArticleReport();
-        articleReport.setDescription(report.description);
-        articleReport.setArticle(new Article(articleId));
-        reportRepository.save(articleReport);
+    @PreAuthorize("hasRole('ADMIN')")
+    public T findById(Long id) {
+        return reportRepository.findById(id).get();
     }
 
-    public void addCommentReport(PostReportDTO report, Long commentId) {
-        CommentReport commentReport = new CommentReport();
-        commentReport.setDescription(report.description);
-        commentReport.setComment(new Comment(commentId));
-        reportRepository.save(commentReport);
-    }
-
-    public List<Report> getAllReports() {
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<T> findAll() {
         return reportRepository.findAll();
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    public void deleteById(Long id) {
+        reportRepository.deleteById(id);
     }
 }

@@ -1,5 +1,6 @@
 package com.krokogator.spring.resources.article.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.krokogator.spring.resources.IdReferenceDTO;
 import com.krokogator.spring.resources.article.ArticleStatus;
 
@@ -29,6 +30,7 @@ public class PatchArticleDTO {
         this.category = category;
     }
 
+    @JsonIgnore
     public Boolean isEmpty() {
         if (title != null) return false;
         if (content != null) return false;
