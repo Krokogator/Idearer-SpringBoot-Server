@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@Api(tags = {"Reports"}, description = "Report Controller")
+@Api(tags = {"Reports"})
 public class ArticleReportController {
 
     @Autowired
@@ -21,7 +21,7 @@ public class ArticleReportController {
 
     @PostMapping("articles/{articleId}/reports")
     @ResponseStatus(HttpStatus.CREATED)
-    public ArticleReport add(@RequestBody PostReportDTO reportDTO, @PathVariable Long articleId) {
+    public ArticleReport reportArticle(@RequestBody PostReportDTO reportDTO, @PathVariable Long articleId) {
         ArticleReport report = new ArticleReport();
         report.setDescription(reportDTO.description);
         report.setArticle(new Article(articleId));
@@ -29,21 +29,21 @@ public class ArticleReportController {
     }
 
     @GetMapping("articles/{articleId}/reports")
-    public Page<ArticleReport> getReportsByArticle(@PathVariable Long articleId,
-                                                   @RequestParam(required = false, defaultValue = "0") Integer page,
-                                                   @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
+    public Page<ArticleReport> getArticleReports(@PathVariable Long articleId,
+                                                 @RequestParam(required = false, defaultValue = "0") Integer page,
+                                                 @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
         Pageable pageable = PageRequest.of(page, pageSize);
         return reportService.findByArticleId(articleId, pageable);
     }
 
     @GetMapping("articles/reported")
-    public List<Long> getReportedArticles() {
+    public List<Long> getReportedArticlesIds() {
         return reportService.findReportedArticles();
     }
 
     @DeleteMapping("articles/reports/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteById(@PathVariable Long id) {
+    public void deleteReport(@PathVariable Long id) {
         reportService.deleteById(id);
     }
 

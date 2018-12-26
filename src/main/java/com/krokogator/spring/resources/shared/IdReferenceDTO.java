@@ -1,4 +1,4 @@
-package com.krokogator.spring.resources;
+package com.krokogator.spring.resources.shared;
 
 import javax.validation.constraints.NotNull;
 

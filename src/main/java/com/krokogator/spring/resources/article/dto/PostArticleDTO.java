@@ -1,6 +1,6 @@
 package com.krokogator.spring.resources.article.dto;
 
-import com.krokogator.spring.resources.IdReferenceDTO;
+import com.krokogator.spring.resources.shared.IdReferenceDTO;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;

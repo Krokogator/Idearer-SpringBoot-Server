@@ -21,13 +21,13 @@ public class ArticleRejectController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("articles/{articleId}/rejects")
     @ResponseStatus(HttpStatus.CREATED)
-    public ArticleReject reject(@PathVariable Long articleId, @RequestBody PostArticleRejectDTO dto) throws ClientErrorException {
-        return service.reject(articleId, dto);
+    public ArticleReject rejectArticle(@PathVariable Long articleId, @RequestBody PostArticleRejectDTO articleRejectDTO) throws ClientErrorException {
+        return service.reject(articleId, articleRejectDTO);
     }
 
     @PreAuthorize("hasRole('USER')")
     @GetMapping("articles/{articleId}/rejects")
-    public List<ArticleReject> getByArticleId(@PathVariable Long articleId, HttpServletRequest request) throws ClientErrorException {
+    public List<ArticleReject> getArticleRejectHistory(@PathVariable Long articleId, HttpServletRequest request) throws ClientErrorException {
         return service.getByArticleId(articleId, request);
     }
 }

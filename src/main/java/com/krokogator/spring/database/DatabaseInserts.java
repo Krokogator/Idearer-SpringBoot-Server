@@ -1,4 +1,4 @@
-package com.krokogator.spring;
+package com.krokogator.spring.database;
 
 import com.krokogator.spring.resources.article.Article;
 import com.krokogator.spring.resources.article.ArticleRepository;
@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
 import static com.krokogator.spring.resources.article.ArticleStatus.*;
 
 @Component
-public class DBDataLoader implements ApplicationRunner {
+public class DatabaseInserts implements ApplicationRunner {
 
     @Autowired
     private UserRepository userRepository;
@@ -36,7 +36,6 @@ public class DBDataLoader implements ApplicationRunner {
     private CommentRepository commentRepository;
     @Autowired
     private ArticleReportRepository articleReportRepository;
-
     @Autowired
     private ArticleRejectRepository articleRejectRepository;
 
