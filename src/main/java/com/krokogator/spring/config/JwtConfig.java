@@ -11,7 +11,6 @@ import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenCo
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
@@ -28,7 +27,7 @@ public class JwtConfig {
         DefaultTokenServices defaultTokenServices = new DefaultTokenServices();
         defaultTokenServices.setSupportRefreshToken(true);
         defaultTokenServices.setTokenEnhancer(accessTokenConverter());
-        defaultTokenServices.setAccessTokenValiditySeconds(3600);
+        defaultTokenServices.setAccessTokenValiditySeconds(60);
         defaultTokenServices.setRefreshTokenValiditySeconds(2678400);
         defaultTokenServices.setTokenStore(tokenStore());
         return defaultTokenServices;
