@@ -27,7 +27,7 @@ public class JwtConfig {
         DefaultTokenServices defaultTokenServices = new DefaultTokenServices();
         defaultTokenServices.setSupportRefreshToken(true);
         defaultTokenServices.setTokenEnhancer(accessTokenConverter());
-        defaultTokenServices.setAccessTokenValiditySeconds(60);
+        defaultTokenServices.setAccessTokenValiditySeconds(3600);
         defaultTokenServices.setRefreshTokenValiditySeconds(2678400);
         defaultTokenServices.setTokenStore(tokenStore());
         return defaultTokenServices;
