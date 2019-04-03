@@ -3,6 +3,7 @@ package com.krokogator.spring.resources.article;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.krokogator.spring.resources.category.Category;
 import com.krokogator.spring.resources.comment.Comment;
+import com.krokogator.spring.resources.report.article.ArticleReport;
 import com.krokogator.spring.resources.user.CurrentUser;
 import com.krokogator.spring.resources.user.User;
 import io.swagger.annotations.ApiModelProperty;
@@ -51,6 +52,9 @@ public class Article {
     private Category category;
 
     private ArticleStatus status;
+
+    @OneToMany(mappedBy = "article")
+    private List<ArticleReport> reports;
 
     public Article(){
         this.likesCount = 0;

@@ -17,6 +17,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.function.Predicate;
 
 
@@ -147,5 +148,9 @@ public class ArticleService {
         }
 
         return updateArticle(article);
+    }
+
+    public List<Article> findReported() {
+        return articleRepository.findAllByReportsNotEmpty();
     }
 }

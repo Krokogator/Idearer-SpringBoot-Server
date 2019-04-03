@@ -93,6 +93,15 @@
             <version>2.0.0.RELEASE</version>
         </dependency>
 
+        <!-- DTO MAPPING -->
+        <!-- https://mvnrepository.com/artifact/net.sf.dozer/dozer -->
+        <dependency>
+            <groupId>net.sf.dozer</groupId>
+            <artifactId>dozer</artifactId>
+            <version>5.0</version>
+        </dependency>
+
+
         <!-- TEST -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -104,6 +113,7 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <!-- Fixes http requests -->

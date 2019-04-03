@@ -46,6 +46,4 @@ public class ArticleReportController {
     public void deleteReport(@PathVariable Long id) {
         reportService.deleteById(id);
     }
-
-
 }

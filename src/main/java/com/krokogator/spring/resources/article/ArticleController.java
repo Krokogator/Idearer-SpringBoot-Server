@@ -16,6 +16,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @RestController
 @Api(tags = "Articles")
@@ -88,6 +89,11 @@ public class ArticleController {
         if (articleDTO.status != null) articleService.updateStatus(articleDTO.status, id, request);
 
 
+    }
+
+    @GetMapping("/test")
+    public List<Article> getReportedArticles() {
+        return articleService.findReported();
     }
 
 }
