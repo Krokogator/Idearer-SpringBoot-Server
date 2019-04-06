@@ -40,6 +40,12 @@ public class ArticleReportController {
         reportService.deleteById(id);
     }
 
+    @DeleteMapping("articles/{id}/reports")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteByArticleId(@PathVariable Long id) {
+        reportService.deleteAllByArticleId(id);
+    }
+
     @GetMapping("articles/reports")
     public Page<ArticleDTO.ReportedItem> getReportedArticles(
             @RequestParam(required = false) Integer page,
