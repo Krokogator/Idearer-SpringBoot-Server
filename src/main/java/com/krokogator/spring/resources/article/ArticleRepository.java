@@ -16,5 +16,5 @@ public interface ArticleRepository extends CrudRepository<Article, Long>, JpaSpe
 
     List<Article> findAll();
 
-    List<Article> findAllByReportsNotEmpty();
+    Page<Article> findAllByReportsNotEmpty(Pageable page);
 }

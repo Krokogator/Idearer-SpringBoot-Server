@@ -3,6 +3,7 @@ package com.krokogator.spring.resources.article;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.krokogator.spring.resources.category.Category;
 import com.krokogator.spring.resources.comment.Comment;
+import com.krokogator.spring.resources.report.Report;
 import com.krokogator.spring.resources.report.article.ArticleReport;
 import com.krokogator.spring.resources.user.CurrentUser;
 import com.krokogator.spring.resources.user.User;
@@ -156,5 +157,13 @@ public class Article {
 
     public void setStatus(ArticleStatus status) {
         this.status = status;
+    }
+
+    public List<ArticleReport> getReports() {
+        return reports;
+    }
+
+    public void setReports(List<ArticleReport> reports) {
+        this.reports = reports;
     }
 }

@@ -1,5 +1,5 @@
 package com.krokogator.spring.utils;
 
-public interface EntityDTO<From> {
-    void toDto(From tll);
+public interface EntityDTO<Entity> {
+    void toDto(Entity entity);
 }

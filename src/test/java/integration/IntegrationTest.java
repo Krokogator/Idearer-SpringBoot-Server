@@ -19,10 +19,10 @@ import javax.transaction.Transactional;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-        AuthorizationTest.class
-})
+//@RunWith(Suite.class)
+//@Suite.SuiteClasses({
+//        AuthorizationTest.class
+//})
 @SpringBootTest(
         classes = MyNotesServerApp.class,
         webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT

@@ -1,9 +1,11 @@
 package com.krokogator.spring.resources.article;
 
 import com.krokogator.spring.error.client.ClientErrorException;
+import com.krokogator.spring.resources.article.dto.ArticleDTO;
 import com.krokogator.spring.resources.article.dto.PageArticleDTO;
 import com.krokogator.spring.resources.article.dto.PatchArticleDTO;
 import com.krokogator.spring.resources.article.dto.PostArticleDTO;
+import com.krokogator.spring.utils.DTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -87,13 +89,6 @@ public class ArticleController {
         if (!articleDTO.isEmpty()) articleService.updateArticle(articleDTO, id);
         if (articleDTO.liked != null) articleService.likeOrDislikeArticle(articleDTO, id);
         if (articleDTO.status != null) articleService.updateStatus(articleDTO.status, id, request);
-
-
-    }
-
-    @GetMapping("/test")
-    public List<Article> getReportedArticles() {
-        return articleService.findReported();
     }
 
 }
