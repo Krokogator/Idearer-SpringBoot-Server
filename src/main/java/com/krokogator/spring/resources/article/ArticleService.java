@@ -150,17 +150,7 @@ public class ArticleService {
         return updateArticle(article);
     }
 
-    public Page<Article> findReported(Integer pageIndex, Integer pageSize) {
-
-        // TODO create util for pagination
-
-        //Default page/page size values if null
-        pageIndex = (pageIndex == null) ? 1 : pageIndex;
-        pageIndex--;
-        pageSize = (pageSize == null) ? 10 : pageSize;
-
-        //Page request instance
-        Pageable page = PageRequest.of(pageIndex, pageSize);
-        return articleRepository.findAllByReportsNotEmpty(page);
+    public List<Article> findReported() {
+        return articleRepository.findAllByReportsNotEmpty();
     }
 }

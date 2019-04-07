@@ -47,10 +47,7 @@ public class ArticleReportController {
     }
 
     @GetMapping("articles/reports")
-    public Page<ArticleDTO.ReportedItem> getReportedArticles(
-            @RequestParam(required = false) Integer page,
-            @RequestParam(required = false) Integer pageSize
-    ) {
-        return DTO.from(articleService.findReported(page, pageSize), ArticleDTO.ReportedItem.class);
+    public List<ArticleDTO.ReportedItem> getReportedArticles() {
+        return DTO.from(articleService.findReported(), ArticleDTO.ReportedItem.class);
     }
 }

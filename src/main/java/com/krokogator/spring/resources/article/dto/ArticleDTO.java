@@ -51,7 +51,7 @@ public class ArticleDTO {
             this.likesCount = article.getLikesCount();
             this.liked = article.isLiked();
             this.commentsCount = article.getCommentsCount();
-            this.user = DTO.from(article.getUser(), UserDTO.MinimalItem.class);
+            this.user = DTO.from(article.getUser(), UserDTO.ListItem.class);
             this.category = article.getCategory();
             this.status = article.getStatus();
         }
